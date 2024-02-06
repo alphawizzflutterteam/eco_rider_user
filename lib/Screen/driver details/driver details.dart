@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
@@ -8,6 +9,7 @@ import '../../Helper/loadingwidget.dart';
 import '../../Model/getDriverModel.dart';
 import '../../Widget/custom_app_button.dart';
 import '../auth/custumScreen.dart';
+import '../trackingScreen.dart';
 
 class DriverDetailsScr extends StatefulWidget {
   const DriverDetailsScr({Key? key}) : super(key: key);
@@ -423,7 +425,7 @@ return
       borderRadius: BorderRadius.circular(12.0),
     ),
     child: Container(
-height: 200,
+// height: 200,
 
 
       child:
@@ -436,18 +438,77 @@ height: 200,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
 
+            Row(
+              children: [
+
+               Container(height: 90,
+               width: 80,
+                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+
+                 image: DecorationImage(image: NetworkImage('${DriverList[index].driverImge}'),fit: BoxFit.fill)
+                 ),
+               ),
+
+                 Spacer(),
+
+                Column(children: [
+
+InkWell(
+  onTap: () {
+
+    _launchPhoneApp(DriverList[index].phone);
+  },
+  child: Container(height: 30,
+
+  width: 30,
+
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+
+        image: DecorationImage(image: AssetImage('assets/images/phone-call.png'),fit: BoxFit.fill)
+    ),
+
+  ),
+),
+
+                  SizedBox(height: 10,),
+                  InkWell(
+                    onTap: () {
+
+                      _launchEmailApp("${DriverList[index].email}");
+
+                    },
+                    child: Container(height: 30,
+
+                      width: 30,
+
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+
+                          image: DecorationImage(image: AssetImage('assets/images/gmail.png'),fit: BoxFit.fill)
+                      ),
+
+                    ),
+                  ),
+
+
+                ],)
+              ],
+
+
+            ),                              SizedBox(height: 5,),
+
 
 
         Row(
-          children: [
-
+          children:[
             Text('Booking Id - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
             Spacer(),
 
-            Text('${DriverList[index].bookingId}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+            Text('${DriverList[index].bookingId.toString()}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
 
           ],
+
         ),                              SizedBox(height: 5,),
+
 
         Row(
           children: [
@@ -457,26 +518,26 @@ height: 200,
             Text('${DriverList[index].userName}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
 
           ],
-        ),                              SizedBox(height: 5,),
-
-        Row(
-          children: [
-            Text('Email - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            Spacer(),
-
-            Text('${DriverList[index].email}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-          ],
-        ),
-        SizedBox(height: 5,),
-
-        Row(
-          children: [
-            Text('Mobile Number - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            Spacer(),
-
-            Text('${DriverList[index].phone}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-          ],
-        ),
+         ),                              SizedBox(height: 5,),
+        //
+        // Row(
+        //   children: [
+        //     Text('Email - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+        //     Spacer(),
+        //
+        //     Text('${DriverList[index].email}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+        //   ],
+        // ),
+        // SizedBox(height: 5,),
+        //
+        // Row(
+        //   children: [
+        //     Text('Mobile Number - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+        //     Spacer(),
+        //
+        //     Text('${DriverList[index].phone}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+        //   ],
+        // ),
 
         SizedBox(height: 5,),
 
@@ -488,16 +549,16 @@ height: 200,
             Text('${DriverList[index].gender}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
           ],
         ),
-            SizedBox(height: 5,),
-
-            Row(
-              children: [
-                Text('Reporting Date/Time - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                Spacer(),
-
-                Text('${DriverList[index].reportingTime?.day}-${DriverList[index].reportingTime?.month}-${DriverList[index].reportingTime?.year}/${DriverList[index].reportingTime?.hour}:${DriverList[index].reportingTime?.minute}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-              ],
-            ),
+            // SizedBox(height: 5,),
+            //
+            // Row(
+            //   children: [
+            //     Text('Reporting Date/Time - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+            //     Spacer(),
+            //
+            //     Text('${DriverList[index].reportingTime}',style: TextStyle(fontSize: 10,fontWeight: FontWeight.w500),),
+            //   ],
+            // ),
 
             SizedBox(height: 5,),
 
@@ -509,6 +570,37 @@ height: 200,
                 Text('${DriverList[index].bookingotp}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
               ],
             ),
+
+            InkWell(
+              onTap: () {
+                print("===my technic=======${DriverList[index].userlat}===============");
+                print("===my technic=======${DriverList[index].userlang}===============");
+                print("===my technic=======${DriverList[index].driverId}===============");
+                Navigator.push(context, MaterialPageRoute(builder: (context) => UserMapScreen(DriverId: DriverList[index].driverId,userlat: DriverList[index].userlat,userlang: DriverList[index].userlang,)),
+
+                );
+              },
+              child: Column(
+                children: [
+                  SizedBox(height: 5,),
+
+                  Container(height: 40,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius
+                            .circular(8),
+
+                        color: Colors.green),
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
+                    child: Center(
+                      child: Text('Track To Driver',style: TextStyle(color: AppColors.whiteTemp),),),
+                  ),
+                ],
+              ),
+            ),
+
       ]),
     )
       ,),
@@ -580,7 +672,34 @@ List<GetDriverListModel> DriverList=[];
 
     },);
   }
-  // final _formKey = GlobalKey<FormState>();
+
+
+  _launchPhoneApp(var num) async {
+    final url = 'tel:$num';
+    if (await launch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _launchEmailApp(var mailId) async {
+    final Uri uri = Uri(
+      scheme: 'mailto',
+      path: mailId,
+
+    );
+
+    final String url = uri.toString();
+
+    if (await launch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+// final _formKey = GlobalKey<FormState>();
   //
   // TextEditingController driverController=TextEditingController();
   // TextEditingController driverIdController=TextEditingController();

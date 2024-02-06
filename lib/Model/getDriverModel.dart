@@ -1,4 +1,5 @@
 
+
 class GetDriverModel {
   bool status;
   String message;
@@ -25,34 +26,42 @@ class GetDriverModel {
 
 class GetDriverListModel {
   String? userName;
+  String? driverId;
   String?  phone;
   String ? email;
   String ? carNo;
   dynamic  licenseNo;
   String ? gender;
+  String ? driverImge;
   String ? status;
   String ? bookingId;
   String?  area;
   String?  cityName;
+  String?  userlat;
+  String?  userlang;
   String?  carModel;
   String?  bookingTypes;
   String?  bookingotp;
   String?  bookingTime;
   String?  amount;
   String?  vehicleType;
-  DateTime? reportingTime;
+  String? reportingTime;
 
   GetDriverListModel({
      this.userName,
+     this.driverId,
      this.phone,
      this.email,
      this.carNo,
      this.licenseNo,
      this.gender,
+     this.driverImge,
      this.status,
      this.bookingId,
      this.area,
      this.cityName,
+     this.userlat,
+     this.userlang,
      this.carModel,
      this.bookingTypes,
      this.bookingotp,
@@ -64,31 +73,37 @@ class GetDriverListModel {
 
   factory GetDriverListModel.fromJson(Map<String, dynamic> json) => GetDriverListModel(
     userName:json["user_name"] ?? "",
+    driverId:json["driver_id"] ?? "",
     phone: json["phone"]?? "",
     email: json["email"]?? "",
     carNo: json["car_no"]?? "",
     licenseNo: json["license_no"]?? "",
     gender: json["gender"]?? "",
+    driverImge: json["user_image"]?? "",
     status: json["status"]?? "",
     bookingId: json["booking_id"]?? "",
     area: json["area"],
     cityName: json["city_name"]?? "",
+    userlat: json["latitude"]?? "",
+    userlang: json["longitude"]?? "",
     carModel: json["car_model"]?? "",
     bookingTypes: json["booking_types"]?? "",
     bookingotp: json["booking_otp"]?? "",
     bookingTime: json["booking_time"]?? "",
     amount: json["amount"]?? "",
     vehicleType: json["vehicle_type"]?? "",
-    reportingTime:json["reporting_time"]==null?DateTime.now() :DateTime.parse(json["reporting_time"]),
+    reportingTime:json["reporting_time"],
   );
 
   Map<String, dynamic> toJson() => {
     "user_name": userName,
+    "driver_id": driverId,
     "phone": phone,
     "email": email,
     "car_no": carNo,
     "license_no": licenseNo,
     "gender": gender,
+    "user_image": driverImge,
     "status": status,
     "booking_id": bookingId,
     "area": area,

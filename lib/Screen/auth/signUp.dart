@@ -589,7 +589,7 @@ readOnly: true,
 
     );
 
-    // Check if the user picked a place
+    // Check if the user picked a place,
     if (result != null) {
       setState(() {
         addressController.text='${result.formattedAddress}';

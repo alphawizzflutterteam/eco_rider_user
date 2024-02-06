@@ -56,6 +56,9 @@ dependencies:
   permission_handler: any
   geolocator: ^9.0.2
   url_launcher: ^6.1.13
+  google_maps_flutter: ^2.4.0
+  cloud_firestore: ^4.8.5
+
 
 
 

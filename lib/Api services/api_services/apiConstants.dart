@@ -52,6 +52,7 @@ const String bankDetail =
 
 // for demo panels
 const String baseUrl = 'https://developmentalphawizz.com/eco_rider/api/Authentication/';
+const String baseUrl1 = 'https://developmentalphawizz.com/eco_rider/api/';
 const String imageUrl = 'https://magma.developmentalphawizz.com/';
 
 //const String ecomExpressUrl = 'https://clbeta.ecomexpress.in/track_me/api/mawbd/';

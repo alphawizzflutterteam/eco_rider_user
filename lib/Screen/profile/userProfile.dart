@@ -9,8 +9,10 @@ import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
 import '../../Helper/loadingwidget.dart';
 import '../../Widget/custom_app_button.dart';
+import '../Mybooking/mybookingScreen.dart';
 import '../auth/custumScreen.dart';
 import '../auth/loginScreen.dart';
+import '../changepasswordinHome/changepasswordinhome.dart';
 import '../dashboard/dashboardScreen.dart';
 import '../faq/faqScreen.dart';
 import '../privecy/privecy.dart';
@@ -35,6 +37,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return
+
 !isloading?
       Stack(
       children: [
@@ -83,18 +86,26 @@ SizedBox(height: 20,),
                       child: tabProfile(context,"Notifications")),
 
                   InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Tranjection(),));
+                      },
+                      child: tabProfile(context,"Wallet")),
+
+
+
+                  InkWell(
 
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MyblookingScr(),));
                       },
-                      child: tabProfile(context,"Booking History")),
+                      child: tabProfile(context,"My Booking")),
 
-                  // InkWell(
-                  //
-                  //     onTap: () {
-                  //       Navigator.push(context, MaterialPageRoute(builder: (context) => Tranjection(),));
-                  //     },
-                  //     child: tabProfile(context,"Wallet")),
+                  InkWell(
+
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordinHome(),));
+                      },
+                      child: tabProfile(context,"Change Password")),
 
                   InkWell(
 
@@ -202,7 +213,7 @@ SizedBox(height: 20,),
                 ),
               ),
 
-             
+
             ],
           ),
         ),

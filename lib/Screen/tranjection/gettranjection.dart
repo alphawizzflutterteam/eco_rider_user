@@ -7,6 +7,7 @@ import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
 import '../../Helper/loadingwidget.dart';
+import '../../Model/getTranjectionModel.dart';
 import '../../Model/tranjectionModel.dart';
 import '../auth/custumScreen.dart';
 
@@ -52,7 +53,7 @@ class _TranjectionState extends State<Tranjection> {
 
                     Text("Wallet Balance",style: TextStyle(fontWeight: FontWeight.w500,color: AppColors.blackTemp,fontSize: 20),),
                     SizedBox(height: 5,),
-                    Text("\u{20B9} ${balance??''} /-",style: TextStyle(color:  Colors.green,fontSize: 18),),
+                    Text("\u{20B9} ${balance??'0'} /-",style: TextStyle(color:  Colors.green,fontSize: 18),),
 
                     Column(
                         children: [
@@ -113,7 +114,7 @@ child: Padding(
             width: MediaQuery.of(context).size.width/2.3,
             child: Align(
               alignment: Alignment.topRight,
-              child: Text("${tranjectionList[index].transactionType??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
+              child: Text("${tranjectionList[index].gatewayName??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
 
                 maxLines: 3,overflow: TextOverflow.ellipsis,
               ),
@@ -130,7 +131,7 @@ child: Padding(
             width: MediaQuery.of(context).size.width/2.3,
             child: Align(
               alignment: Alignment.topRight,
-              child: Text("${tranjectionList[index].type??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
+              child: Text("${tranjectionList[index].gatewayName??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
 
                 maxLines: 3,overflow: TextOverflow.ellipsis,
               ),
@@ -148,7 +149,7 @@ child: Padding(
             width: MediaQuery.of(context).size.width/2.3,
             child: Align(
               alignment: Alignment.topRight,
-              child: Text("${tranjectionList[index].amount??""} /-",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
+              child: Text("${tranjectionList[index].balance??""} /-",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
 
                 maxLines: 3,overflow: TextOverflow.ellipsis,
               ),
@@ -166,7 +167,7 @@ child: Padding(
             width: MediaQuery.of(context).size.width/2.3,
             child: Align(
               alignment: Alignment.topRight,
-              child: Text("${tranjectionList[index].transactionDate.day??""}-${tranjectionList[index].transactionDate.month??""}-${tranjectionList[index].transactionDate.year??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
+              child: Text("${tranjectionList[index].txnDate??""}",style: TextStyle(fontWeight:FontWeight.bold,color: AppColors.tabtextColor,fontSize: 15),
 
                 maxLines: 3,overflow: TextOverflow.ellipsis,
               ),
@@ -205,7 +206,7 @@ child: Padding(
   bool isLoading=false;
   var userId;
 var balance;
-  List<TranjectionListtt> tranjectionList=[];
+  List<TranjectionHistoryModel> tranjectionList=[];
   Future<void> getTranjection() async {
     setState(() {
       isLoading=true;
@@ -216,16 +217,23 @@ var balance;
       'user_id': userId.toString(),
 
     };
-    apiBaseHelper.postAPICall(GetWallecturl,param ).then((getDta){
+    apiBaseHelper.postAPICall(getTranjectionHistory,param ).then((getDta){
 
-      if(getDta['error']==false){
+      if(getDta['status']==true){
         setState(() {
-          balance=getDta['balance'];
-          tranjectionList=  TranjectionModel.fromJson(getDta).data??[];
+          balance=getDta['total'];
+          tranjectionList=  TranjectionHistory.fromJson(getDta).data??[];
           setState(() {
             isLoading=false;
           });
         });
+
+      }else{
+        tranjectionList.clear();
+        setState(() {
+          isLoading=false;
+        });
+
 
       }
 

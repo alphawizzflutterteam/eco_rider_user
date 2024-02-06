@@ -7,6 +7,7 @@ import 'package:eco_rider_user/Screen/dashboard/dashboardScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -439,10 +440,13 @@ InkWell(
       bool error =getDta['status'];
       String msg =getDta['message'];
       if(error==true){
+        print("===my technic==== api===${getDta['data']['gender'].toString()}===============");
+        String getGender = "${getDta['data']['gender'].toString()}";
+        String capitalizedA = "${getGender[0].toUpperCase()}${getGender.substring(1)}";
+
         setState(() {
-
-
-          _selectvehiclecat=getDta['data']['gender'].toString();
+          print("===my technic=====convert==${capitalizedA}===============");
+          _selectvehiclecat=capitalizedA.toString();
           ownernameController.text=getDta['data']['username'].toString();
           emailC.text=getDta['data']['email'].toString();
           mobilecontroller.text=getDta['data']['mobile'].toString();
@@ -614,7 +618,7 @@ print(request.fields);
       var finalresult=jsonDecode(result);
 
       if(finalresult['status']==true){
-
+Fluttertoast.showToast(msg: "${finalresult['message'].toString()}");
 
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard(),));
 
