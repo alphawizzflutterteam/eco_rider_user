@@ -112,6 +112,9 @@ class _bookingScrState extends State<bookingScr> {
                       // }
 
 
+
+
+
                       else if(selectincityoroutcity==null){
                         customSnackbar(context,"Please Select In City/Out City".toString() );
 
@@ -131,10 +134,10 @@ class _bookingScrState extends State<bookingScr> {
                         customSnackbar(context,"Please Select Start Time".toString() );
 
                       }
-                    // else if(selectendTimeController.text.isEmpty){
-                    //   customSnackbar(context,"Please Select End Time".toString() );
-                    //
-                    // }
+                    else if(reportingTimecontroller.text.isEmpty){
+                      customSnackbar(context,"Please Select Reporting Time".toString() );
+
+                    }
                       // else if(selecthour==null){
                       //   customSnackbar(context,"Please Select Duration Selection".toString() );
                       //
@@ -1363,8 +1366,7 @@ var userId;
       'reporting_time':reportingTimecontroller.text.toString(),
     'pickup_date':fromdate.toString(),
      'pickup_time':selectStrartTimeController.text.toString(),
-      // 'duration': selecthour.toString(),
-      // 'duration_time': enterDurationController.text.toString(),
+      'duration': selectincityoroutcity=="In City"?"Hourly":"Directly",
       // 'total_amount': totalamount.toString(),
     'latitude':lat.toString(),
     'longitude':long.toString(),
