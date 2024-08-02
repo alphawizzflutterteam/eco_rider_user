@@ -1,6 +1,4 @@
 import 'dart:async';
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
-
 import '../../Helper/loadingwidget.dart';
 import '../../Model/allBookingModel.dart';
 import '../auth/custumScreen.dart';
