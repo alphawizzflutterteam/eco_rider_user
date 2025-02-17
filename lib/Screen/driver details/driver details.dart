@@ -1,15 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
-import '../../Helper/Colors.dart';
 import '../../Helper/loadingwidget.dart';
 import '../../Model/getDriverModel.dart';
-import '../../Widget/custom_app_button.dart';
 import '../auth/custumScreen.dart';
-import '../trackingScreen.dart';
 
 class DriverDetailsScr extends StatefulWidget {
   const DriverDetailsScr({Key? key}) : super(key: key);
@@ -25,35 +22,32 @@ class _DriverDetailsScrState extends State<DriverDetailsScr> {
     super.initState();
     getNotifivcation();
   }
+
   @override
   Widget build(BuildContext context) {
-    return   SafeArea(
+    return SafeArea(
       child: Scaffold(
-          body:
-
-          !isLoading?
-
-          Stack(
-            children: [
-
-              customdecorationFORScr(context,"Driver Details"),
-
-              Container(
-                margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.15),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Color(0xffF6F6F6),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-                ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20,right: 20,top: 20),
-                    child: Column(
-                      children: [
-
+        body: !isLoading
+            ? Stack(
+                children: [
+                  customdecorationFORScr(context, "Driver Details"),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.15),
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Color(0xffF6F6F6),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30)),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.only(left: 20, right: 20, top: 20),
+                        child: Column(
+                          children: [
 //                         const SizedBox(
 //                           height: 20,
 //                         ),
@@ -392,287 +386,368 @@ class _DriverDetailsScrState extends State<DriverDetailsScr> {
 //
 //                         SizedBox(height: 30,)
 
-                        const SizedBox(
-                          height: 20,
-                        ),
+                            const SizedBox(
+                              height: 20,
+                            ),
 
-                        Row(
-                          children: [
-                            Text('Drivers',style: TextStyle(fontSize: 17,fontWeight: FontWeight.w500),),
-                          ],
-                        ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Drivers',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
 
-                        const SizedBox(
-                          height: 20,
-                        ),
+                            const SizedBox(
+                              height: 20,
+                            ),
 
-
-                        DriverList.isEmpty?Container(
-
-                          height: MediaQuery.of(context).size.height/1.6,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(child: Text('Drivers Not Found',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),),
-                        ):
-
-                        ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: DriverList.length,
-                        itemBuilder: (context, index) {
-return
-  Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12.0),
-    ),
-    child: Container(
+                            DriverList.isEmpty
+                                ? Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        1.6,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: Text(
+                                        'Drivers Not Found',
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: DriverList.length,
+                                    itemBuilder: (context, index) {
+                                      return Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                        ),
+                                        child: Container(
 // height: 200,
 
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15),
+                                            child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        height: 90,
+                                                        width: 80,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    '${DriverList[index].driverImge}'),
+                                                                fit: BoxFit
+                                                                    .fill)),
+                                                      ),
+                                                      Spacer(),
+                                                      Column(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              _launchPhoneApp(
+                                                                  DriverList[
+                                                                          index]
+                                                                      .phone);
+                                                            },
+                                                            child: Container(
+                                                              height: 30,
+                                                              width: 30,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  image: DecorationImage(
+                                                                      image: AssetImage(
+                                                                          'assets/images/phone-call.png'),
+                                                                      fit: BoxFit
+                                                                          .fill)),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              _launchEmailApp(
+                                                                  "${DriverList[index].email}");
+                                                            },
+                                                            child: Container(
+                                                              height: 30,
+                                                              width: 30,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  image: DecorationImage(
+                                                                      image: AssetImage(
+                                                                          'assets/images/gmail.png'),
+                                                                      fit: BoxFit
+                                                                          .fill)),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
 
-      child:
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Booking Id - ',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        '${DriverList[index].bookingId.toString()}',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
 
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Driver Name - ',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        '${DriverList[index].userName}',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  //
+                                                  // Row(
+                                                  //   children: [
+                                                  //     Text('Email - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                                  //     Spacer(),
+                                                  //
+                                                  //     Text('${DriverList[index].email}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                                  //   ],
+                                                  // ),
+                                                  // SizedBox(height: 5,),
+                                                  //
+                                                  // Row(
+                                                  //   children: [
+                                                  //     Text('Mobile Number - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                                  //     Spacer(),
+                                                  //
+                                                  //     Text('${DriverList[index].phone}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                                  //   ],
+                                                  // ),
 
-    Padding(
-      padding: const EdgeInsets.all(15),
-      child: Column(
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
 
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Gender - ',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        '${DriverList[index].gender}',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  // SizedBox(height: 5,),
+                                                  //
+                                                  // Row(
+                                                  //   children: [
+                                                  //     Text('Reporting Date/Time - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                                  //     Spacer(),
+                                                  //
+                                                  //     Text('${DriverList[index].reportingTime}',style: TextStyle(fontSize: 10,fontWeight: FontWeight.w500),),
+                                                  //   ],
+                                                  // ),
 
-            Row(
-              children: [
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
 
-               Container(height: 90,
-               width: 80,
-                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'OTP - ',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        '${DriverList[index].bookingotp}',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
 
-                 image: DecorationImage(image: NetworkImage('${DriverList[index].driverImge}'),fit: BoxFit.fill)
-                 ),
-               ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Total Amount - ',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        '${DriverList[index].amount}',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ],
+                                                  ),
 
-                 Spacer(),
-
-                Column(children: [
-
-InkWell(
-  onTap: () {
-
-    _launchPhoneApp(DriverList[index].phone);
-  },
-  child: Container(height: 30,
-
-  width: 30,
-
-    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-
-        image: DecorationImage(image: AssetImage('assets/images/phone-call.png'),fit: BoxFit.fill)
-    ),
-
-  ),
-),
-
-                  SizedBox(height: 10,),
-                  InkWell(
-                    onTap: () {
-
-                      _launchEmailApp("${DriverList[index].email}");
-
-                    },
-                    child: Container(height: 30,
-
-                      width: 30,
-
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-
-                          image: DecorationImage(image: AssetImage('assets/images/gmail.png'),fit: BoxFit.fill)
+                                                  // InkWell(
+                                                  //   onTap: () {
+                                                  //     print("===my technic=======${DriverList[index].userlat}===============");
+                                                  //     print("===my technic=======${DriverList[index].userlang}===============");
+                                                  //     print("===my technic=======${DriverList[index].driverId}===============");
+                                                  //     Navigator.push(context, MaterialPageRoute(builder: (context) => UserMapScreen(DriverId: DriverList[index].driverId,userlat: DriverList[index].userlat,userlang: DriverList[index].userlang,)),
+                                                  //
+                                                  //     );
+                                                  //   },
+                                                  //   child: Column(
+                                                  //     children: [
+                                                  //       SizedBox(height: 5,),
+                                                  //
+                                                  //       Container(height: 40,
+                                                  //         decoration: BoxDecoration(
+                                                  //             borderRadius: BorderRadius
+                                                  //                 .circular(8),
+                                                  //
+                                                  //             color: Colors.green),
+                                                  //         width: MediaQuery
+                                                  //             .of(context)
+                                                  //             .size
+                                                  //             .width,
+                                                  //         child: Center(
+                                                  //           child: Text('Track To Driver',style: TextStyle(color: AppColors.whiteTemp),),),
+                                                  //       ),
+                                                  //     ],
+                                                  //   ),
+                                                  // ),
+                                                ]),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                          ],
+                        ),
                       ),
-
                     ),
-                  ),
-
-
-                ],)
-              ],
-
-
-            ),                              SizedBox(height: 5,),
-
-
-
-        Row(
-          children:[
-            Text('Booking Id - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            Spacer(),
-
-            Text('${DriverList[index].bookingId.toString()}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-
-          ],
-
-        ),                              SizedBox(height: 5,),
-
-
-        Row(
-          children: [
-            Text('Driver Name - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            Spacer(),
-
-            Text('${DriverList[index].userName}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-
-          ],
-         ),                              SizedBox(height: 5,),
-        //
-        // Row(
-        //   children: [
-        //     Text('Email - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-        //     Spacer(),
-        //
-        //     Text('${DriverList[index].email}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-        //   ],
-        // ),
-        // SizedBox(height: 5,),
-        //
-        // Row(
-        //   children: [
-        //     Text('Mobile Number - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-        //     Spacer(),
-        //
-        //     Text('${DriverList[index].phone}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-        //   ],
-        // ),
-
-        SizedBox(height: 5,),
-
-        Row(
-          children: [
-            Text('Gender - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            Spacer(),
-
-            Text('${DriverList[index].gender}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-          ],
-        ),
-            // SizedBox(height: 5,),
-            //
-            // Row(
-            //   children: [
-            //     Text('Reporting Date/Time - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-            //     Spacer(),
-            //
-            //     Text('${DriverList[index].reportingTime}',style: TextStyle(fontSize: 10,fontWeight: FontWeight.w500),),
-            //   ],
-            // ),
-
-            SizedBox(height: 5,),
-
-            Row(
-              children: [
-                Text('OTP - ',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                Spacer(),
-
-                Text('${DriverList[index].bookingotp}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-              ],
-            ),
-
-            InkWell(
-              onTap: () {
-                print("===my technic=======${DriverList[index].userlat}===============");
-                print("===my technic=======${DriverList[index].userlang}===============");
-                print("===my technic=======${DriverList[index].driverId}===============");
-                Navigator.push(context, MaterialPageRoute(builder: (context) => UserMapScreen(DriverId: DriverList[index].driverId,userlat: DriverList[index].userlat,userlang: DriverList[index].userlang,)),
-
-                );
-              },
-              child: Column(
-                children: [
-                  SizedBox(height: 5,),
-
-                  Container(height: 40,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius
-                            .circular(8),
-
-                        color: Colors.green),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    child: Center(
-                      child: Text('Track To Driver',style: TextStyle(color: AppColors.whiteTemp),),),
-                  ),
+                  )
                 ],
-              ),
-            ),
-
-      ]),
-    )
-      ,),
-
-  );
-
-
-
-
-
-                        },)
-                      ],
-                    ),
-                  ),
-                ),
               )
-            ],
-          )
-              :
-
-          Container(
-
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Center(child: LoadingWidget2(context),),
-          ),
-
+            : Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: LoadingWidget2(context),
+                ),
+              ),
       ),
     );
   }
 
-
-  bool isLoading=false;
-List<GetDriverListModel> DriverList=[];
+  bool isLoading = false;
+  List<GetDriverListModel> DriverList = [];
   Future<void> getNotifivcation() async {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
 
-
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-   var userId =prefs.getString('userId');
-    var param ={
+    var userId = prefs.getString('userId');
+    var param = {'user_id': '${userId.toString()}'};
 
-      'user_id': '${userId.toString()}'
-
-    };
-
-    apiBaseHelper.postAPICall(getDriverUrl,param).then((getDta){
-
-      if(getDta['status']==true){
-        setState(() {
-
-          DriverList=GetDriverModel.fromJson(getDta).data??[];
+    apiBaseHelper.postAPICall(getDriverUrl, param).then(
+      (getDta) {
+        if (getDta['status'] == true) {
           setState(() {
-            isLoading=false;
+            DriverList = GetDriverModel.fromJson(getDta).data ?? [];
+            setState(() {
+              isLoading = false;
+            });
           });
-        });
-
-      }
-      else{
-
-        setState(() {
-          isLoading=false;
-        });
-      }
-
-
-    },);
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      },
+    );
   }
-
 
   _launchPhoneApp(var num) async {
     final url = 'tel:$num';
@@ -687,7 +762,6 @@ List<GetDriverListModel> DriverList=[];
     final Uri uri = Uri(
       scheme: 'mailto',
       path: mailId,
-
     );
 
     final String url = uri.toString();
@@ -708,6 +782,4 @@ List<GetDriverListModel> DriverList=[];
   // TextEditingController repostTimeController=TextEditingController();
   // TextEditingController PicController=TextEditingController();
   // TextEditingController dropController=TextEditingController();
-
-
 }

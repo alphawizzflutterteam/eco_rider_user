@@ -1,4 +1,3 @@
-
 import 'package:eco_rider_user/Helper/Colors.dart';
 import 'package:eco_rider_user/Screen/homepage/homePage.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
@@ -9,8 +8,6 @@ import '../driver details/driver details.dart';
 import '../profile/userProfile.dart';
 
 class Dashboard extends StatefulWidget {
-
-
   int? dIndex;
   Dashboard({super.key, this.dIndex});
   @override
@@ -24,44 +21,47 @@ class _DashboardState extends State<Dashboard> {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   @override
   void initState() {
-int? index=0;
+    int? index = 0;
 
-    if (index ==0) {
-
+    if (index == 0) {
       setState(() {
-        selectedIndex =0;
+        selectedIndex = 0;
       });
-      _child =  selectedIndex== 0
-          ? HomeScr():
-           Container();
+      _child = selectedIndex == 0 ? const HomeScr() : Container();
     } else {
       _child = Container();
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-
       onWillPop: () async {
         showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Confirm Exit"),
-                content: Text("Are you sure you want to exit?"),
+                title: const Text("Confirm Exit"),
+                content: const Text("Are you sure you want to exit?"),
                 actions: <Widget>[
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: AppColors.primary),
-                    child: Text("YES"),
+                    child: const Text(
+                      "YES",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () {
                       SystemNavigator.pop();
                     },
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: AppColors.primary),
-                    child: Text("NO"),
+                    child: const Text(
+                      "NO",
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -73,96 +73,89 @@ int? index=0;
       },
       child: SafeArea(
           child: Scaffold(
-            key: _key,
-            body: _child,
-            bottomNavigationBar: FluidNavBar(
-              icons: [
-                FluidNavBarIcon(
-                    icon: Icons.home,
-                    // unselectedForegroundColor: Colors.grey,
-                    selectedForegroundColor: Colors.white,
-                    //  svgPath: "assets/home.svg",
-                    backgroundColor: AppColors.primary,
-                    unselectedForegroundColor: Colors.white,
-                    //  selectedIndex == 1 ? colors.primary : colors.white10,
-                    extras: {"label": "Home"}),
-                FluidNavBarIcon(
-                  // unselectedForegroundColor: Colors.grey,
-                    selectedForegroundColor: Colors.white,
-                    icon: Icons.screen_lock_landscape,
-                    backgroundColor: AppColors.primary,
-                    unselectedForegroundColor: Colors.white,
-                    //  selectedIndex == 1 ? colors.primary : colors.white10,
-                    extras: {"label": "Driver Details"}),
-                FluidNavBarIcon(
-                    icon: Icons.person,
-                    // unselectedForegroundColor: Colors.grey,
-                    selectedForegroundColor: Colors.white,
-                    unselectedForegroundColor: Colors.white,
-                    backgroundColor:
-                    AppColors.primary,
-
-                    extras: {"label": "My Profile"}),
-
+        key: _key,
+        body: _child,
+        bottomNavigationBar: FluidNavBar(
+          icons: [
+            FluidNavBarIcon(
+                icon: Icons.home,
+                // unselectedForegroundColor: Colors.grey,
+                selectedForegroundColor: Colors.white,
+                //  svgPath: "assets/home.svg",
+                backgroundColor: AppColors.primary,
+                unselectedForegroundColor: Colors.white,
+                //  selectedIndex == 1 ? colors.primary : colors.white10,
+                extras: {"label": "Home"}),
+            FluidNavBarIcon(
+                // unselectedForegroundColor: Colors.grey,
+                selectedForegroundColor: Colors.white,
+                icon: Icons.screen_lock_landscape,
+                backgroundColor: AppColors.primary,
+                unselectedForegroundColor: Colors.white,
+                //  selectedIndex == 1 ? colors.primary : colors.white10,
+                extras: {"label": "Driver Details"}),
+            FluidNavBarIcon(
+                icon: Icons.person,
+                // unselectedForegroundColor: Colors.grey,
+                selectedForegroundColor: Colors.white,
+                unselectedForegroundColor: Colors.white,
+                backgroundColor: AppColors.primary,
+                extras: {"label": "My Profile"}),
+          ],
+          onChange: _handleNavigationChange,
+          style: const FluidNavBarStyle(
+            barBackgroundColor: AppColors.primary,
+          ),
+          scaleFactor: 1.2,
+          defaultIndex: selectedIndex,
+          animationFactor: 0.5,
+          itemBuilder: (icon, item) => Semantics(
+            label: icon.extras!["label"],
+            container: true,
+            enabled: true,
+            child: Stack(
+              children: [
+                item,
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.25 - 25,
+                    margin: const EdgeInsets.only(top: 40),
+                    child: Center(
+                        child: Text(
+                      icon.extras!["label"],
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    )))
               ],
-              onChange: _handleNavigationChange,
-              style: FluidNavBarStyle(
-                barBackgroundColor: AppColors.primary,
-              ),
-              scaleFactor: 1.2,
-              defaultIndex: selectedIndex,
-              animationFactor: 0.5,
-              itemBuilder: (icon, item) => Semantics(
-                label: icon.extras!["label"],
-                container: true,
-                enabled: true,
-                child: Stack(
-                  children: [
-                    item,
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.25 - 25,
-                        margin: EdgeInsets.only(top: 40),
-                        child: Center(
-                            child: Text(
-                              icon.extras!["label"],
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold),
-                            )))
-                  ],
-                ),
-              ),
             ),
-          )),
+          ),
+        ),
+      )),
     );
   }
 
   void _handleNavigationChange(int index) {
     setState(() {
-
       print(index);
-        selectedIndex = index;
+      selectedIndex = index;
       switch (index) {
         case 0:
-          _child = HomeScr();
+          _child = const HomeScr();
           break;
         case 1:
-          _child =DriverDetailsScr();
+          _child = const DriverDetailsScr();
           break;
         case 2:
-          _child = UserProfile();
+          _child = const UserProfile();
           break;
-
       }
       _child = AnimatedSwitcher(
         switchInCurve: Curves.bounceOut,
         switchOutCurve: Curves.bounceIn,
-        duration: Duration(milliseconds: 600),
+        duration: const Duration(milliseconds: 600),
         child: _child,
       );
     });
   }
 }
-
-

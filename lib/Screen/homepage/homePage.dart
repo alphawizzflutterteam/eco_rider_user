@@ -1,22 +1,20 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:place_picker/entities/location_result.dart';
 import 'package:place_picker/widgets/place_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
 import '../../Helper/loadingwidget.dart';
 import '../../Model/allBookingModel.dart';
-import '../auth/custumScreen.dart';
 import '../driverbooking/driverbookingScr.dart';
-
-
-
 
 class HomeScr extends StatefulWidget {
   const HomeScr({Key? key}) : super(key: key);
@@ -28,205 +26,205 @@ class HomeScr extends StatefulWidget {
 class _HomeScrState extends State<HomeScr> {
   @override
   Widget build(BuildContext context) {
-    return
-
-
-        Scaffold(
-
-appBar:
-
-
-PreferredSize(
-  preferredSize: Size.fromHeight(80),child:
-
-Container(
-
-
-
-  height: 80,width: MediaQuery.of(context).size.width,decoration: BoxDecoration(gradient: LinearGradient(colors:
-
-[AppColors.primary,AppColors.primary],
-
-)),
-  child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-    SizedBox(width: 20,),
-    Text("Home",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: AppColors.whiteTemp),),
-    SizedBox(width: 20,),
-
-  ]),
-)
-
-
-
-  ,),
-          body:
-          SingleChildScrollView(
-            child: Column(children: [
-
-              Container(
-                height: MediaQuery.of(context).size.height/2,
-                width: MediaQuery.of(context).size.width,
-                child:
-
-                lat==null?
-
-                    Center(child:
-                    LoadingWidget2(context),):
-
-                GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target:LatLng(
-                        double.parse(lat??""), double.parse(long??"")),
-                    zoom: 13.5,
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: Container(
+          height: 80,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            colors: [AppColors.primary, AppColors.primary],
+          )),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              "Home",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: AppColors.whiteTemp),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ]),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.width,
+            child: lat == null
+                ? Center(
+                    child: LoadingWidget2(context),
+                  )
+                : GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                          double.parse(lat ?? ""), double.parse(long ?? "")),
+                      zoom: 13.5,
+                    ),
+                    markers: {
+                      Marker(
+                        visible: true,
+                        draggable: true,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(90),
+                        markerId: MarkerId("currentLocation"),
+                        position: LatLng(
+                            double.parse(lat ?? ""), double.parse(long ?? "")),
+                      ),
+                      //  Marker(
+                      //   markerId: MarkerId("source"),
+                      //   position: sourceLocation,
+                      // ),
+                      Marker(
+                        markerId: MarkerId("destination"),
+                        position: destination,
+                      ),
+                    },
+                    polylines: {
+                      Polyline(
+                        visible: true,
+                        jointType: JointType.mitered,
+                        polylineId: PolylineId("route"),
+                        points: polylineCoordinates,
+                        color: Colors.blue,
+                        width: 6,
+                      ),
+                    },
+                    onMapCreated: (mapController) {
+                      _controller.complete(mapController);
+                    },
                   ),
-                  markers: {
-                    Marker(
-                      visible: true,
-                      draggable:true,
-                      icon:BitmapDescriptor.defaultMarkerWithHue(90),
-                      markerId:  MarkerId("currentLocation"),
-                      position: LatLng(
-                          double.parse(lat??""), double.parse(long??"")),
-                    ),
-                    //  Marker(
-                    //   markerId: MarkerId("source"),
-                    //   position: sourceLocation,
-                    // ),
-                    Marker(
-                      markerId: MarkerId("destination"),
-                      position: destination,
-                    ),
-                  },
-                  polylines: {
-                    Polyline(
-                      visible:true,
-                      jointType: JointType.mitered,
-                      polylineId: PolylineId("route"),
-                      points: polylineCoordinates,
-                      color:  Colors.blue,
-                      width: 6,
-                    ),
-                  },
-                  onMapCreated: (mapController) {
-                    _controller.complete(mapController);
-                  },
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: TextFormField(
+              // readOnly: true,
+              // onTap: () {
+              //   showPlacePicker("pl");
+              // },
+              controller: pickupLocationcontroller,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.location_on,
+                  color: AppColors.tabtextColor,
                 ),
-              ),
-
-              SizedBox(height: 20,),
-
-
-              Padding(
-                padding: const EdgeInsets.only(left: 20,right: 20),
-                child: TextFormField(
-                  readOnly: true,
-                  onTap: () {
-
-                    showPlacePicker("pl");
-
-                  },
-                  controller: pickupLocationcontroller,
-                  decoration: InputDecoration(
-
-                    prefixIcon: const Icon(
-                      Icons.location_on,
-                      color: AppColors.tabtextColor,
-                    ),
-
-                    hintText: 'Pickup Location',
-labelText:'Pickup Location' ,
-                    hintStyle: TextStyle(fontSize: 13),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                    focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                        BorderSide(color: AppColors.primary, width: 2)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
+                hintText: 'Pickup Location',
+                labelText: 'Pickup Location',
+                hintStyle: TextStyle(fontSize: 13),
+                contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide:
                         const BorderSide(color: AppColors.primary, width: 2)),
-                    errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                        BorderSide(color: AppColors.primary, width: 2)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-
-
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Pickup Location';
-                    }
-                    return null; // Return null if the input is valid
-                  },
-
-
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primary),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              SizedBox(height: 20,),
-
-
-              Padding(
-                padding: const EdgeInsets.only(left: 20,right: 20),
-                child: TextFormField(
-                  readOnly: true,
-                  onTap: () {
-
-                    showPlacePicker("dl");
-                  },
-                  controller: droplocationcontroller,
-                  decoration: InputDecoration(
-
-                    prefixIcon: const Icon(
-                      Icons.location_on,
-                      color: AppColors.tabtextColor,
-                    ),
-
-                    hintText: 'Drop Location',
-labelText: "Drop Location`",
-                    hintStyle: TextStyle(fontSize: 13),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                    focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                        BorderSide(color: AppColors.primary, width: 2)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please Enter Pickup Location';
+                }
+                return null; // Return null if the input is valid
+              },
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: TextFormField(
+              // readOnly: true,
+              // onTap: () {
+              //   showPlacePicker("dl");
+              // },
+              controller: droplocationcontroller,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.location_on,
+                  color: AppColors.tabtextColor,
+                ),
+                hintText: 'Drop Location',
+                labelText: "Drop Location`",
+                hintStyle: TextStyle(fontSize: 13),
+                contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide:
                         const BorderSide(color: AppColors.primary, width: 2)),
-                    errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide:
-                        BorderSide(color: AppColors.primary, width: 2)),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-
-
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please Enter Drop Location';
-                    }
-                    return null; // Return null if the input is valid
-                  },
-
-
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColors.primary),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-
-
-
-            ]),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please Enter Drop Location';
+                }
+                return null; // Return null if the input is valid
+              },
+            ),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          InkWell(
+            onTap: () {
+              if (pickupLocationcontroller.text == '') {
+                Fluttertoast.showToast(msg: 'Please Select Pickup Location');
+              } else if (droplocationcontroller.text == '') {
+                Fluttertoast.showToast(msg: 'Please Select Drop Location');
+              } else {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => bookingScr(
+                          pickupLocation:
+                              pickupLocationcontroller.text.toString(),
+                          droplocation: droplocationcontroller.text.toString()),
+                    ));
+              }
+            },
+            child: Container(
+              width: 320,
+              height: 40,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.primary),
+              child: Center(
+                  child: const Text(
+                'Search',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              )),
+            ),
           )
-
-          ,);
+        ]),
+      ),
+    );
 // Scaffold(
 //
 //
@@ -450,12 +448,10 @@ labelText: "Drop Location`",
 //
 //
 // );
-
-
-
   }
-TextEditingController pickupLocationcontroller =TextEditingController();
-TextEditingController droplocationcontroller =TextEditingController();
+
+  TextEditingController pickupLocationcontroller = TextEditingController();
+  TextEditingController droplocationcontroller = TextEditingController();
 
   @override
   void initState() {
@@ -464,69 +460,52 @@ TextEditingController droplocationcontroller =TextEditingController();
     getUserCurrentLocation();
   }
 
+  bool isLoading = false;
 
-  bool isLoading=false;
-
-
-  List<BookingModelList> bookingList =[];
+  List<BookingModelList> bookingList = [];
   Future<void> getBooking() async {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var  userId =prefs.getString('userId');
+    var userId = prefs.getString('userId');
 
-    var param ={
-
+    var param = {
       'user_id': userId.toString(),
-
     };
 
-    apiBaseHelper.postAPICall(getbookingurl,param).then((getDta){
-
-      bool error =getDta['status'];
-      String msg =getDta['message'];
-      if(error==true){
-        setState(() {
-          bookingList= BookingModel.fromJson(getDta).data??[];
-
+    apiBaseHelper.postAPICall(getbookingurl, param).then(
+      (getDta) {
+        bool error = getDta['status'];
+        String msg = getDta['message'];
+        if (error == true) {
           setState(() {
-            isLoading=false;
+            bookingList = BookingModel.fromJson(getDta).data ?? [];
+
+            setState(() {
+              isLoading = false;
+            });
           });
-        });
-      }
-      else{
-
-        setState(() {
-          isLoading=false;
-        });
-      }
-
-
-    },);
-
-
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      },
+    );
   }
 
   String? lat;
   String? long;
 
-
-
-
   Position? currentLocation;
 
-
   Future getUserCurrentLocation() async {
-
-
     var status = await Permission.location.request();
     if (status.isDenied) {
-
     } else if (status.isGranted) {
-
       await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high)
+              desiredAccuracy: LocationAccuracy.high)
           .then((position) {
         if (mounted)
           setState(() {
@@ -534,64 +513,48 @@ TextEditingController droplocationcontroller =TextEditingController();
             lat = currentLocation?.latitude.toString();
             long = currentLocation?.longitude.toString();
 
-           destination = LatLng(double.parse(lat??""), double.parse(long??""));
-
-
+            destination =
+                LatLng(double.parse(lat ?? ""), double.parse(long ?? ""));
           });
       });
-      print("LOCATION===" +currentLocation.toString());
+      print("LOCATION===" + currentLocation.toString());
       //updateDriverLocation();
-
     } else if (status.isPermanentlyDenied) {
-
-
       openAppSettings();
-
-
     }
-
-
-
   }
 
   final Completer<GoogleMapController> _controller = Completer();
   List<LatLng> polylineCoordinates = [];
-  static  LatLng destination=LatLng(double.parse("22.719568"), double.parse("75.857727"));
-
+  static LatLng destination =
+      LatLng(double.parse("22.719568"), double.parse("75.857727"));
 
   void showPlacePicker(String val) async {
-    LocationResult result = await Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) =>
-                PlacePicker(
-
-
-                    "AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM"))
-
-    );
+    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            PlacePicker("AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM")));
 
     // Check if the user picked a place
     if (result != null) {
-      if(val=="pl"){
-
+      if (val == "pl") {
         setState(() {
-          pickupLocationcontroller.text='${result.formattedAddress}';
+          pickupLocationcontroller.text = '${result.formattedAddress}';
           print(pickupLocationcontroller.text);
         });
-      }else{
+      } else {
         setState(() {
-          droplocationcontroller.text='${result.formattedAddress}';
+          droplocationcontroller.text = '${result.formattedAddress}';
           print(droplocationcontroller.text);
 
-          Navigator.push(context, MaterialPageRoute(builder: (context) => bookingScr(pickupLocation: pickupLocationcontroller.text.toString(),droplocation: droplocationcontroller.text.toString()),));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => bookingScr(
+                    pickupLocation: pickupLocationcontroller.text.toString(),
+                    droplocation: droplocationcontroller.text.toString()),
+              ));
         });
-
       }
-
-
     }
   }
-
 }
-
-
