@@ -2,7 +2,6 @@ import 'package:eco_rider_user/Screen/auth/verifyOtp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
@@ -10,18 +9,16 @@ import '../../Helper/Colors.dart';
 import '../../Helper/customeTost.dart';
 import '../../Helper/loadingwidget.dart';
 import '../../Widget/custom_app_button.dart';
-import '../dashboard/dashboardScreen.dart';
 import 'custumScreen.dart';
-import 'loginMobile.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginMobile extends StatefulWidget {
+  const LoginMobile({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginMobile> createState() => _LoginMobileState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginMobileState extends State<LoginMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +46,23 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 13,
                     ),
+                    // const Row(
+                    //   children: [
+                    //     Text(
+                    //       'Sign Up',
+                    //       style: TextStyle(
+                    //           fontSize: 20, fontWeight: FontWeight.bold),
+                    //     ),
+                    //   ],
+                    // ),
                     const Row(
                       children: [
                         Text(
-                          'Login',
+                          'Create New Account',
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -137,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                         } else if (value.length < 10) {
                           return 'Please Enter Valid Mobile Number';
                         }
-                        return null;
+                        return null; // Return null if the input is valid
                       },
                     ),
                     //     : TextFormField(
@@ -266,50 +274,19 @@ class _LoginPageState extends State<LoginPage> {
                     //         ),
                     //       ),
                     const SizedBox(
-                      height: 60,
+                      height: 50,
                     ),
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
                           loginmobileApi();
-                          //  Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(),));
                         }
                       },
                       child: !isLoading
                           ? CustomButton(
-                              textt: "Get OTP",
+                              textt: "Send Otp",
                             )
                           : LoadingWidget(context),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginMobile(),
-                          ),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account?",
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            " Sign Up",
-                            style: TextStyle(
-                                color: AppColors.primary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
                     ),
                     const SizedBox(
                       height: 100,
@@ -332,49 +309,10 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseException {}
   }
 
-  void loginemailApi() {
-    setState(() {
-      isLoading = true;
-    });
-
-    var param = {
-      'email': emailC.text.toString(),
-      'password': passwordC.text.toString(),
-      'firebaseToken': fcmToken.toString(),
-    };
-
-    apiBaseHelper.postAPICall(loginurl, param).then((getData) async {
-      bool error = getData['status'];
-      String msg = getData['message'].toString();
-
-      print("email");
-      if (error == true) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userId', '${getData['data']['id']}');
-
-        customSnackbar(context, msg.toString());
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Dashboard(),
-            ));
-        setState(() {
-          isLoading = false;
-        });
-      } else {
-        customSnackbar(context, msg.toString());
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     getFCM();
   }
 
@@ -384,29 +322,27 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       isLoading = true;
     });
-
     var param = {
-      'user_phone': mobilecontroller.text.toString(),
+      'mobile': mobilecontroller.text.toString(),
     };
-
-    apiBaseHelper.postAPICall(loginurl, param).then((getData) async {
+    apiBaseHelper.postAPICall(mobileCheck, param).then((getData) async {
       bool error = getData['status'];
       String msg = getData['message'].toString();
-
       print("mobile");
       if (error == true) {
-        var otp = getData['data'].toString();
+        var otp = getData['otp'].toString();
         customSnackbar(context, msg.toString());
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VerifyOtp(
-                isLogin: true,
-                Mobile: mobilecontroller.text,
-                otp: otp.toString(),
-                isFrom: "login",
-              ),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyOtp(
+              isLogin: true,
+              Mobile: mobilecontroller.text,
+              otp: otp.toString(),
+              isFrom: "signup",
+            ),
+          ),
+        );
         setState(() {
           isLoading = false;
         });

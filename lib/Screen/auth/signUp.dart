@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:eco_rider_user/Screen/auth/loginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:place_picker/entities/location_result.dart';
 import 'package:place_picker/widgets/place_picker.dart';
 
@@ -13,7 +16,8 @@ import '../../Widget/custom_app_button.dart';
 import 'custumScreen.dart';
 
 class SignUpScr extends StatefulWidget {
-  const SignUpScr({super.key});
+  String? mobile;
+  SignUpScr({super.key, this.mobile});
 
   @override
   State<SignUpScr> createState() => _SignUpScrState();
@@ -24,6 +28,132 @@ class _SignUpScrState extends State<SignUpScr> {
   final passwordC = TextEditingController();
   final confirmPasswordC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  bool uploadadhar = false;
+  File? licenseFrontImg;
+  File? licenseBackImg;
+
+  Future<void> pickImage(ImageSource source, String type) async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: source,
+      maxHeight: 100,
+      maxWidth: 100,
+      imageQuality: 50, // You can adjust the image quality here
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        if (type == 'aadharfront') {
+          licenseFrontImg = File(pickedFile.path);
+          print(licenseFrontImg);
+        } else if (type == 'aadharback') {
+          licenseBackImg = File(pickedFile.path);
+          print(licenseBackImg);
+        }
+      });
+    }
+  }
+
+  showAlertDialog(BuildContext context, String type) {
+    AlertDialog alert = AlertDialog(
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 25),
+          child: Container(
+            height: 250,
+            color: Colors.transparent, //could change this to Color(0xFF737373),
+            //so you don't have to change MaterialApp canvasColor
+            child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.0),
+                        topRight: Radius.circular(10.0))),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 5,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(75),
+                          color: Colors.grey),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Text(
+                      'Select Any One Option',
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print(type);
+                        Navigator.of(context).pop();
+                        pickImage(ImageSource.gallery, type);
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8)),
+                          child:
+                              const Center(child: Text('Select From Gallery')),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print(type);
+                        Navigator.of(context).pop();
+                        pickImage(ImageSource.camera, type);
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: Container(
+                          width: 200,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Center(child: Text('Select From Camera')),
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+          ),
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    mobilecontroller.text = widget.mobile.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +179,10 @@ class _SignUpScrState extends State<SignUpScr> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 13,
                     ),
-                    Row(
+                    const Row(
                       children: [
                         Text(
                           'Sign Up',
@@ -64,13 +194,7 @@ class _SignUpScrState extends State<SignUpScr> {
                     SizedBox(
                       height: 13,
                     ),
-                    Text(
-                      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                    SizedBox(
+                    const SizedBox(
                       height: 25,
                     ),
                     TextFormField(
@@ -81,7 +205,7 @@ class _SignUpScrState extends State<SignUpScr> {
                           color: AppColors.tabtextColor,
                         ),
                         hintText: 'Owner Name',
-                        hintStyle: TextStyle(fontSize: 13),
+                        hintStyle: const TextStyle(fontSize: 13),
                         contentPadding: const EdgeInsets.symmetric(vertical: 5),
                         focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
@@ -153,6 +277,7 @@ class _SignUpScrState extends State<SignUpScr> {
                     TextFormField(
                       maxLength: 10,
                       controller: mobilecontroller,
+                      readOnly: true,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         counterText: "",
@@ -216,7 +341,7 @@ class _SignUpScrState extends State<SignUpScr> {
                                 hint: SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width / 1.7,
-                                  child: Text(
+                                  child: const Text(
                                     'Select Gender',
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
@@ -253,12 +378,12 @@ class _SignUpScrState extends State<SignUpScr> {
                           Icons.car_crash_outlined,
                           color: AppColors.tabtextColor,
                         ),
-                        hintText: 'Registration No',
-                        hintStyle: TextStyle(fontSize: 13),
+                        hintText: 'License No.',
+                        hintStyle: const TextStyle(fontSize: 13),
                         contentPadding: const EdgeInsets.symmetric(vertical: 5),
                         focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: AppColors.whiteTemp, width: 2)),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
@@ -266,10 +391,11 @@ class _SignUpScrState extends State<SignUpScr> {
                                 color: AppColors.whiteTemp, width: 2)),
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
+                            borderSide: const BorderSide(
                                 color: AppColors.whiteTemp, width: 2)),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.whiteTemp),
+                          borderSide:
+                              const BorderSide(color: AppColors.whiteTemp),
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
@@ -283,6 +409,201 @@ class _SignUpScrState extends State<SignUpScr> {
                     SizedBox(
                       height: 5,
                     ),
+                    !uploadadhar
+                        ? InkWell(
+                            onTap: () {
+                              setState(() {
+                                uploadadhar = true;
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    MediaQuery.of(context).size.width / 2),
+                                border: Border.all(
+                                    width: 2, color: AppColors.whiteTemp),
+                              ),
+                              child: Container(
+                                child: const Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.add_card,
+                                      color: AppColors.tabtextColor,
+                                    ),
+                                    SizedBox(
+                                      width: 13,
+                                    ),
+                                    Text(
+                                      'Upload Aadhar',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppColors.faqanswerColor),
+                                    ),
+                                    Spacer(),
+                                    Icon(
+                                      Icons.file_upload_outlined,
+                                      color: AppColors.tabtextColor,
+                                      size: 22,
+                                    ),
+                                    SizedBox(
+                                      width: 13,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showAlertDialog(context, 'aadharfront');
+                                },
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 80,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: AppColors.tabtextColor),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: licenseFrontImg == null
+                                                ? Image.asset(
+                                                    'assets/images/adhar.png',
+                                                    height: 150.0,
+                                                    width: 100.0,
+                                                  )
+                                                : Image.file(licenseFrontImg!)),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.2,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.primary),
+                                          child: const Center(
+                                            child: Text(
+                                              'Upload License',
+                                              style: TextStyle(
+                                                  color: AppColors.tabtextColor,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Text(
+                                              '  Front Image',
+                                              style: TextStyle(
+                                                  color: AppColors.tabtextColor,
+                                                  fontSize: 10),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showAlertDialog(context, 'aadharback');
+                                },
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 80,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: AppColors.tabtextColor),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: licenseBackImg == null
+                                              ? Image.asset(
+                                                  'assets/images/adhar.png',
+                                                  height: 150.0,
+                                                  width: 100.0,
+                                                )
+                                              : Image.file(licenseBackImg!),
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.2,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.primary),
+                                          child: const Center(
+                                            child: Text(
+                                              'Upload License',
+                                              style: TextStyle(
+                                                  color: AppColors.tabtextColor,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                        ),
+                                        const Row(
+                                          children: [
+                                            Text(
+                                              '  Back Image',
+                                              style: TextStyle(
+                                                  color: AppColors.tabtextColor,
+                                                  fontSize: 10),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
                     // TextFormField(
                     //   onTap: () {
                     //     showPlacePicker();
@@ -321,171 +642,180 @@ class _SignUpScrState extends State<SignUpScr> {
                     //     return null; // Return null if the input is valid
                     //   },
                     // ),
-                    TextFormField(
-                      controller: addressController,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.location_on,
-                          color: AppColors.tabtextColor,
-                        ),
-                        hintText: 'Address',
-                        hintStyle: TextStyle(fontSize: 13),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.whiteTemp),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please Enter Address';
-                        }
-                        return null; // Return null if the input is valid
-                      },
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      obscureText: _obscureText,
-                      controller: passwordC,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: AppColors.primary,
-                            size: 16,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: AppColors.tabtextColor,
-                        ),
-                        hintText: 'Password',
-                        hintStyle: TextStyle(fontSize: 13),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.whiteTemp),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please Enter Password';
-                        }
-                        return null; // Return null if the input is valid
-                      },
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    TextFormField(
-                      obscureText: _obscureText,
-                      controller: confirmPasswordC,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: AppColors.primary,
-                            size: 16,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureText = !_obscureText;
-                            });
-                          },
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: AppColors.tabtextColor,
-                        ),
-                        hintText: 'Confirm Password',
-                        hintStyle: TextStyle(fontSize: 13),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                                color: AppColors.whiteTemp, width: 2)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.whiteTemp),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please Enter Password';
-                        } else if (value.toString() !=
-                            passwordC.text.toString()) {
-                          return 'Confirm Password is Not Match';
-                        }
-                        return null; // Return null if the input is valid
-                      },
-                    ),
+                    // TextFormField(
+                    //   controller: addressController,
+                    //   decoration: InputDecoration(
+                    //     prefixIcon: const Icon(
+                    //       Icons.location_on,
+                    //       color: AppColors.tabtextColor,
+                    //     ),
+                    //     hintText: 'Address',
+                    //     hintStyle: TextStyle(fontSize: 13),
+                    //     contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                    //     focusedErrorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: const BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     errorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(color: AppColors.whiteTemp),
+                    //       borderRadius: BorderRadius.circular(25),
+                    //     ),
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return 'Please Enter Address';
+                    //     }
+                    //     return null; // Return null if the input is valid
+                    //   },
+                    // ),
+                    // const SizedBox(
+                    //   height: 8,
+                    // ),
+                    // TextFormField(
+                    //   obscureText: _obscureText,
+                    //   controller: passwordC,
+                    //   decoration: InputDecoration(
+                    //     suffixIcon: IconButton(
+                    //       icon: Icon(
+                    //         _obscureText
+                    //             ? Icons.visibility
+                    //             : Icons.visibility_off,
+                    //         color: AppColors.primary,
+                    //         size: 16,
+                    //       ),
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           _obscureText = !_obscureText;
+                    //         });
+                    //       },
+                    //     ),
+                    //     prefixIcon: const Icon(
+                    //       Icons.lock,
+                    //       color: AppColors.tabtextColor,
+                    //     ),
+                    //     hintText: 'Password',
+                    //     hintStyle: TextStyle(fontSize: 13),
+                    //     contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                    //     focusedErrorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: const BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     errorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(color: AppColors.whiteTemp),
+                    //       borderRadius: BorderRadius.circular(25),
+                    //     ),
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return 'Please Enter Password';
+                    //     }
+                    //     return null; // Return null if the input is valid
+                    //   },
+                    // ),
+                    // const SizedBox(
+                    //   height: 8,
+                    // ),
+                    // TextFormField(
+                    //   obscureText: _obscureText,
+                    //   controller: confirmPasswordC,
+                    //   decoration: InputDecoration(
+                    //     suffixIcon: IconButton(
+                    //       icon: Icon(
+                    //         _obscureText
+                    //             ? Icons.visibility
+                    //             : Icons.visibility_off,
+                    //         color: AppColors.primary,
+                    //         size: 16,
+                    //       ),
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           _obscureText = !_obscureText;
+                    //         });
+                    //       },
+                    //     ),
+                    //     prefixIcon: const Icon(
+                    //       Icons.lock,
+                    //       color: AppColors.tabtextColor,
+                    //     ),
+                    //     hintText: 'Confirm Password',
+                    //     hintStyle: TextStyle(fontSize: 13),
+                    //     contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                    //     focusedErrorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: const BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     errorBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(25),
+                    //         borderSide: BorderSide(
+                    //             color: AppColors.whiteTemp, width: 2)),
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(color: AppColors.whiteTemp),
+                    //       borderRadius: BorderRadius.circular(25),
+                    //     ),
+                    //   ),
+                    //   validator: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return 'Please Enter Password';
+                    //     } else if (value.toString() !=
+                    //         passwordC.text.toString()) {
+                    //       return 'Confirm Password is Not Match';
+                    //     }
+                    //     return null; // Return null if the input is valid
+                    //   },
+                    // ),
                     const SizedBox(
                       height: 50,
                     ),
                     InkWell(
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
+                          if (licenseFrontImg == null) {
+                            customSnackbar(
+                                context, "Please Upload License Front Image");
+                          } else if (licenseBackImg == null) {
+                            customSnackbar(
+                                context, "Please Upload License Back Image");
+                          }
                           signUp();
-                          //  Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard(),));
+                          setState(() {
+                            isLoading = false;
+                          });
                         }
                       },
                       child: !isLoading
                           ? CustomButton(
-                              textt: "Sign Up",
+                              textt: "Continue",
                             )
                           : LoadingWidget(context),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     InkWell(
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
@@ -503,13 +833,13 @@ class _SignUpScrState extends State<SignUpScr> {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 100,
                     )
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -533,7 +863,15 @@ class _SignUpScrState extends State<SignUpScr> {
       'password': passwordC.text,
       'rc_number': registrationNoController.text,
     };
-    apiBaseHelper.postAPICall(registrationurl, param).then((getData) {
+
+    List<Map<String, dynamic>> imagefile = [
+      {"key": "license_front_image", "filePath": licenseFrontImg!.path},
+      {"key": "license_back_image", "filePath": licenseBackImg!.path},
+    ];
+    print("sign up par $param image here $imagefile");
+    apiBaseHelper
+        .postMultipartAPICall(registrationurl, param, imagefile)
+        .then((getData) {
       bool error = getData['status'];
       String msg = getData['message'];
 

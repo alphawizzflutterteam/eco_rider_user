@@ -57,7 +57,7 @@ class _UserProfileState extends State<UserProfile> {
                     height: MediaQuery.of(context).size.height / 17,
                   ),
                   Text(
-                    "${name ?? ""}",
+                    name ?? "",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: AppColors.blackTemp,
@@ -76,14 +76,16 @@ class _UserProfileState extends State<UserProfile> {
                     child: SingleChildScrollView(
                       child: Column(children: [
                         InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UpdateProfile(),
-                                  ));
-                            },
-                            child: tabProfile(context, "Update Profile")),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UpdateProfile(),
+                              ),
+                            );
+                          },
+                          child: tabProfile(context, "Update Profile"),
+                        ),
                         InkWell(
                             onTap: () {
                               Navigator.push(
@@ -227,7 +229,7 @@ class _UserProfileState extends State<UserProfile> {
                           child: CircleAvatar(
                             radius: 45,
                             backgroundColor: Colors.grey,
-                            backgroundImage: NetworkImage("${imagepath}"),
+                            backgroundImage: NetworkImage("$imagepath"),
                           ),
                         ),
                       ),
