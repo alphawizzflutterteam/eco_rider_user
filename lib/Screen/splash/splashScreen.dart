@@ -32,14 +32,16 @@ class _SplashScrState extends State<SplashScr> {
     return Container(
       height: MediaQuery.of(context).size.width,
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/Splashscreen.png'))),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/Splashscreen.png'),
+        ),
+      ),
       child: Center(
         child: Container(
           height: 250,
           width: 250,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
             image: AssetImage('assets/images/splash logo.png'),
           )),

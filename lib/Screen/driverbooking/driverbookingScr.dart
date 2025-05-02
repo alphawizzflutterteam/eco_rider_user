@@ -7,8 +7,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:place_picker/entities/location_result.dart';
-import 'package:place_picker/widgets/place_picker.dart';
+// import 'package:place_picker/entities/location_result.dart';
+// import 'package:place_picker/widgets/place_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Api services/api_services/apiBasehelper.dart';
@@ -44,7 +44,7 @@ class _bookingScrState extends State<bookingScr> {
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Confirm Exit"),
+                  title: const Text("Confirm Exit"),
                   content: Text("Are you sure you want to exit?"),
                   actions: <Widget>[
                     ElevatedButton(
@@ -143,7 +143,7 @@ class _bookingScrState extends State<bookingScr> {
                       top: MediaQuery.of(context).size.height * 0.15),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xffF6F6F6),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
@@ -162,7 +162,7 @@ class _bookingScrState extends State<bookingScr> {
                           TextFormField(
                             readOnly: true,
                             onTap: () {
-                              showPlacePicker("pl");
+                              // showPlacePicker("pl");
                             },
                             controller: pickupLocationcontroller,
                             decoration: InputDecoration(
@@ -207,7 +207,7 @@ class _bookingScrState extends State<bookingScr> {
                           TextFormField(
                             readOnly: true,
                             onTap: () {
-                              showPlacePicker("dl");
+                              // showPlacePicker("dl");
                             },
                             controller: droplocationcontroller,
                             decoration: InputDecoration(
@@ -250,7 +250,7 @@ class _bookingScrState extends State<bookingScr> {
                             height: 20,
                           ),
 
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 'Select Vehicle Category',
@@ -277,7 +277,7 @@ class _bookingScrState extends State<bookingScr> {
                               child: DropdownButton2(
                                 isExpanded: true,
 
-                                hint: Text(
+                                hint: const Text(
                                   'Select Vehicle Category',
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -1632,24 +1632,24 @@ class _bookingScrState extends State<bookingScr> {
     return '$hour:${minute.toString().padLeft(2, '0')} $period';
   }
 
-  void showPlacePicker(String val) async {
-    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            PlacePicker("AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM")));
-
-    // Check if the user picked a place
-    if (result != null) {
-      if (val == "pl") {
-        setState(() {
-          pickupLocationcontroller.text = '${result.formattedAddress}';
-          print(pickupLocationcontroller.text);
-        });
-      } else {
-        setState(() {
-          droplocationcontroller.text = '${result.formattedAddress}';
-          print(droplocationcontroller.text);
-        });
-      }
-    }
-  }
+  // void showPlacePicker(String val) async {
+  //   LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+  //       builder: (context) =>
+  //           PlacePicker("AIzaSyBWG0ZCi63QT7H6rDeP7FUTxP12GHhwrZM")));
+  //
+  //   // Check if the user picked a place
+  //   if (result != null) {
+  //     if (val == "pl") {
+  //       setState(() {
+  //         pickupLocationcontroller.text = '${result.formattedAddress}';
+  //         print(pickupLocationcontroller.text);
+  //       });
+  //     } else {
+  //       setState(() {
+  //         droplocationcontroller.text = '${result.formattedAddress}';
+  //         print(droplocationcontroller.text);
+  //       });
+  //     }
+  //   }
+  // }
 }

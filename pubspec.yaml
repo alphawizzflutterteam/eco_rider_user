@@ -49,24 +49,20 @@ dependencies:
   otp_text_field: ^1.1.3
   intl: ^0.18.1
   fluid_bottom_nav_bar: ^1.4.0
+  toggle_switch: ^2.3.0
   dropdown_button2: ^2.3.6
+  flutter_rating_bar: ^4.0.0
   cached_network_image: ^3.2.1
   image_picker: any
-  place_picker: ^0.10.0
+#  place_picker: ^0.10.0
   permission_handler: any
+  razorpay_flutter: ^1.3.7
   geolocator: ^9.0.2
   url_launcher: ^6.1.13
   google_maps_flutter: ^2.4.0
   cloud_firestore: ^4.8.5
-
-
-
-
-
-
-
-
-
+  geocoding: ^2.2.0
+  google_maps_place_picker_mb: any
 
 
 dev_dependencies:

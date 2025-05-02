@@ -12,7 +12,6 @@ import '../../Helper/loadingwidget.dart';
 import '../../Widget/custom_app_button.dart';
 import '../dashboard/dashboardScreen.dart';
 import 'custumScreen.dart';
-import 'loginMobile.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
             customAuthDegine(context, "assets/images/login.png"),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.36),
+                  top: MediaQuery.of(context).size.height * 0.30),
               height: MediaQuery.of(context).size.height * 0.69,
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -284,33 +283,33 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 50,
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginMobile(),
-                          ),
-                        );
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account?",
-                            style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            " Sign Up",
-                            style: TextStyle(
-                                color: AppColors.primary,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => const LoginMobile(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: const Row(
+                    //     mainAxisAlignment: MainAxisAlignment.center,
+                    //     children: [
+                    //       Text(
+                    //         "Don't have an account?",
+                    //         style: TextStyle(
+                    //             fontSize: 15, fontWeight: FontWeight.bold),
+                    //       ),
+                    //       Text(
+                    //         " Sign Up",
+                    //         style: TextStyle(
+                    //             color: AppColors.primary,
+                    //             fontSize: 15,
+                    //             fontWeight: FontWeight.bold),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 100,
                     ),
@@ -398,15 +397,16 @@ class _LoginPageState extends State<LoginPage> {
         var otp = getData['data'].toString();
         customSnackbar(context, msg.toString());
         Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VerifyOtp(
-                isLogin: true,
-                Mobile: mobilecontroller.text,
-                otp: otp.toString(),
-                isFrom: "login",
-              ),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyOtp(
+              isLogin: true,
+              Mobile: mobilecontroller.text,
+              otp: otp.toString(),
+              isFrom: "login",
+            ),
+          ),
+        );
         setState(() {
           isLoading = false;
         });

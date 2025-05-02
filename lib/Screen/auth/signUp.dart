@@ -4,8 +4,9 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:eco_rider_user/Screen/auth/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:place_picker/entities/location_result.dart';
-import 'package:place_picker/widgets/place_picker.dart';
+
+// import 'package:place_picker/entities/location_result.dart';
+// import 'package:place_picker/widgets/place_picker.dart';
 
 import '../../Api services/api_services/apiBasehelper.dart';
 import '../../Api services/api_services/apiStrings.dart';
@@ -902,26 +903,26 @@ class _SignUpScrState extends State<SignUpScr> {
   String? _selectvehiclecat;
   List selectvehicle_List = ['Male', 'Female'];
 
-  void showPlacePicker() async {
-    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            PlacePicker("AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM")));
-
-    // Check if the user picked a place,
-    if (result != null) {
-      setState(() {
-        addressController.text = '${result.formattedAddress}';
-        print(addressController.text);
-      });
-      setState(() {
-        lat = "${result.latLng!.latitude}";
-        print(lat);
-
-        lang = "${result.latLng!.longitude}";
-        print(lang);
-      });
-    }
-  }
+  // void showPlacePicker() async {
+  //   LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+  //       builder: (context) =>
+  //           PlacePicker("AIzaSyBWG0ZCi63QT7H6rDeP7FUTxP12GHhwrZM")));
+  //
+  //   // Check if the user picked a place,
+  //   if (result != null) {
+  //     setState(() {
+  //       addressController.text = '${result.formattedAddress}';
+  //       print(addressController.text);
+  //     });
+  //     setState(() {
+  //       lat = "${result.latLng!.latitude}";
+  //       print(lat);
+  //
+  //       lang = "${result.latLng!.longitude}";
+  //       print(lang);
+  //     });
+  //   }
+  // }
 
   var lat;
   var lang;

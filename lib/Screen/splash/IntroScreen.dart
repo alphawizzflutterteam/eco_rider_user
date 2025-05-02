@@ -1,3 +1,5 @@
+import 'dart:async'; // Add this import
+
 import 'package:eco_rider_user/Screen/auth/loginScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   final PageController _controller = PageController();
   int _currentPage = 0;
+  Timer? _timer;
 
   final List<Map<String, String>> steps = [
     {
@@ -31,44 +34,80 @@ class _IntroScreenState extends State<IntroScreen> {
     {
       "title": "Hassle Free Payment",
       "step": "Step: 4",
-      "image": "assets/images/introfour.jpg",
+      "image": "assets/images/introfour.png",
     },
   ];
 
-  Widget _buildPage(Map<String, String> step) {
+  @override
+  void initState() {
+    super.initState();
+    _startAutoSlide();
+  }
+
+  void _startAutoSlide() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < steps.length - 1) {
+        _currentPage++;
+        _controller.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        _timer?.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Widget _buildPage(Map<String, String> step, bool isLastPage) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(step["image"]!, height: 200),
+        Image.asset(step["image"]!, height: 300),
         const SizedBox(height: 20),
-        Text(step["step"]!, style: const TextStyle(fontSize: 16)),
+        Text(step["step"]!,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
-        Text(step["title"]!,
-            style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.green)),
-        const SizedBox(height: 30),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginPage(),
-              ),
-            );
-            // Navigation or action
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary, shape: const StadiumBorder()),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-            child: Text(
-              "BOOK NOW",
-              style: TextStyle(color: Colors.white),
-            ),
+        Text(
+          step["title"]!,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xff5db491),
           ),
         ),
+        const SizedBox(height: 30),
+        if (isLastPage)
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  shape: const StadiumBorder()),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                child: Text(
+                  "BOOK NOW",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -94,24 +133,35 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _controller,
-              itemCount: steps.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
-              },
-              itemBuilder: (context, index) => _buildPage(steps[index]),
-            ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+          image: DecorationImage(
+            image: AssetImage('assets/images/bacKImage.png'),
+            fit: BoxFit.cover,
           ),
-          const SizedBox(height: 10),
-          _buildDots(),
-          const SizedBox(height: 20),
-        ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: steps.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) =>
+                    _buildPage(steps[index], index == steps.length - 1),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildDots(),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 //Your application name
 
 const String appName = 'Book N Play';
@@ -29,7 +28,7 @@ String defaultCountryCode = 'IN';
 //Time settings
 const int timeOut = 50;
 const int perPage = 10;
-
+String? lat, long;
 //FontSize
 const double textFontSize7 = 7;
 
@@ -52,7 +51,10 @@ const String bankDetail =
 
 // for demo panels
 // const String baseUrl = 'https://developmentalphawizz.com/eco_rider/api/Authentication/';
-const String baseUrl = 'https://developmentalphawizz.com/eco_rider/api/Authentication/';
+const String baseUrl =
+    'https://developmentalphawizz.com/eco_rider/api/Authentication/';
+const String baseUrl2 =
+    'https://developmentalphawizz.com/eco_rider/api/payment/';
 // const String baseUrl1 = 'https://developmentalphawizz.com/eco_rider/api/';
 const String baseUrl1 = 'https://developmentalphawizz.com/eco_rider/api/';
 // const String imageUrl = 'https://magma.developmentalphawizz.com/';

@@ -1,29 +1,32 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:place_picker/entities/location_result.dart';
-import 'package:place_picker/widgets/place_picker.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+// import 'package:place_picker/entities/location_result.dart';
+// import 'package:place_picker/widgets/place_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Api services/api_services/apiBasehelper.dart';
+import '../../Api services/api_services/apiConstants.dart';
 import '../../Api services/api_services/apiStrings.dart';
 import '../../Helper/Colors.dart';
 import '../../Helper/loadingwidget.dart';
-import '../../Model/allBookingModel.dart';
+import '../../Model/CabTypeModel.dart';
+import '../../Vehicl/SelectVehicle.dart';
 import '../Mybooking/mybookingScreen.dart';
 import '../auth/loginScreen.dart';
-import '../changepasswordinHome/changepasswordinhome.dart';
-import '../driverbooking/driverbookingScr.dart';
 import '../faq/faqScreen.dart';
 import '../notification/notification.dart';
 import '../privecy/privecy.dart';
 import '../profile/updateProfile.dart';
 import '../support/customerSupport.dart';
 import '../termcondition/termCondition.dart';
-import '../tranjection/gettranjection.dart';
+import '../tranjection/PaymentTransaction.dart';
 
 class HomeScr extends StatefulWidget {
   const HomeScr({Key? key}) : super(key: key);
@@ -60,12 +63,12 @@ class _HomeScrState extends State<HomeScr> {
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(
-                name ?? "",
+                name ?? "$mobile",
                 style:
                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               ),
               accountEmail: Text(
-                email ?? "",
+                email ?? '',
                 style:
                     const TextStyle(fontWeight: FontWeight.w500, fontSize: 15),
               ),
@@ -99,15 +102,26 @@ class _HomeScrState extends State<HomeScr> {
               child: tabProfile(context, "Notifications"),
             ),
             InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Tranjection(walletBalance: walletAmount),
-                      ));
-                },
-                child: tabProfile(context, "Wallet")),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentTransaction(),
+                  ),
+                );
+              },
+              child: tabProfile(context, "Payment"),
+            ),
+            // InkWell(
+            //     onTap: () {
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) =>
+            //                 Tranjection(walletBalance: walletAmount),
+            //           ));
+            //     },
+            //     child: tabProfile(context, "Wallet")),
             InkWell(
                 onTap: () {
                   Navigator.push(
@@ -117,15 +131,15 @@ class _HomeScrState extends State<HomeScr> {
                       ));
                 },
                 child: tabProfile(context, "My Booking")),
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChangePasswordinHome(),
-                      ));
-                },
-                child: tabProfile(context, "Change Password")),
+            // InkWell(
+            //     onTap: () {
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => const ChangePasswordinHome(),
+            //           ));
+            //     },
+            //     child: tabProfile(context, "Change Password")),
             InkWell(
                 onTap: () {
                   Navigator.push(
@@ -190,54 +204,6 @@ class _HomeScrState extends State<HomeScr> {
                               Navigator.pop(context);
                               // SystemNavigator.pop();
                               Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginPage(),
-                                  ));
-                            },
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: AppColors.primary),
-                            child: const Text(
-                              "NO",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      );
-                    });
-              },
-              child: tabProfile(context, "Logout"),
-            ),
-            InkWell(
-              onTap: () {
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Confirm Delete"),
-                        content:
-                            const Text("Are you sure to Delete This Account?"),
-                        actions: <Widget>[
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: AppColors.primary),
-                            child: const Text(
-                              "YES",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                deleteAccount();
-                              });
-                              Navigator.pop(context);
-                              // SystemNavigator.pop();
-                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const LoginPage(),
@@ -260,8 +226,57 @@ class _HomeScrState extends State<HomeScr> {
                       );
                     });
               },
-              child: tabProfile(context, "Delete Account"),
+              child: tabProfile(context, "Logout"),
             ),
+            // InkWell(
+            //   onTap: () {
+            //     showDialog(
+            //         context: context,
+            //         barrierDismissible: false,
+            //         builder: (BuildContext context) {
+            //           return AlertDialog(
+            //             title: const Text("Confirm Delete"),
+            //             content:
+            //                 const Text("Are you sure to Delete This Account?"),
+            //             actions: <Widget>[
+            //               ElevatedButton(
+            //                 style: ElevatedButton.styleFrom(
+            //                     primary: AppColors.primary),
+            //                 child: const Text(
+            //                   "YES",
+            //                   style: TextStyle(color: Colors.white),
+            //                 ),
+            //                 onPressed: () async {
+            //                   setState(() {
+            //                     deleteAccount();
+            //                   });
+            //                   Navigator.pop(context);
+            //                   // SystemNavigator.pop();
+            //                   Navigator.pushReplacement(
+            //                     context,
+            //                     MaterialPageRoute(
+            //                       builder: (context) => const LoginPage(),
+            //                     ),
+            //                   );
+            //                 },
+            //               ),
+            //               ElevatedButton(
+            //                 style: ElevatedButton.styleFrom(
+            //                     primary: AppColors.primary),
+            //                 child: const Text(
+            //                   "NO",
+            //                   style: TextStyle(color: Colors.white),
+            //                 ),
+            //                 onPressed: () {
+            //                   Navigator.of(context).pop();
+            //                 },
+            //               ),
+            //             ],
+            //           );
+            //         });
+            //   },
+            //   child: tabProfile(context, "Delete Account"),
+            // ),
           ],
         ),
       ),
@@ -299,222 +314,348 @@ class _HomeScrState extends State<HomeScr> {
       //   ),
       // ),
       body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            height: MediaQuery.of(context).size.height / 1.3,
-            width: MediaQuery.of(context).size.width,
-            child: lat == null
-                ? Center(
-                    child: LoadingWidget2(context),
-                  )
-                : GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        double.parse(lat ?? ""),
-                        double.parse(long ?? ""),
-                      ),
-                      zoom: 13.5,
-                    ),
-                    markers: {
-                      Marker(
-                        visible: true,
-                        draggable: true,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(90),
-                        markerId: const MarkerId("currentLocation"),
-                        position: LatLng(
-                            double.parse(lat ?? ""), double.parse(long ?? "")),
-                      ),
-                      //  Marker(
-                      //   markerId: MarkerId("source"),
-                      //   position: sourceLocation,
-                      // ),
-                      Marker(
-                        markerId: const MarkerId("destination"),
-                        position: destination,
-                      ),
-                    },
-                    polylines: {
-                      Polyline(
-                        visible: true,
-                        jointType: JointType.mitered,
-                        polylineId: const PolylineId("route"),
-                        points: polylineCoordinates,
-                        color: Colors.blue,
-                        width: 6,
-                      ),
-                    },
-                    onMapCreated: (mapController) {
-                      _controller.complete(mapController);
-                    },
-                  ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            spacing: 20,
-            runSpacing: 20,
-            children: List.generate(rideOptions.length, (index) {
-              final option = rideOptions[index];
-              final isSelected = selectedIndex == index;
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedIndex = index;
-                  });
-                },
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor:
-                          isSelected ? Colors.green : Colors.grey[300],
-                      child: Icon(
-                        option.icon,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      option.title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: isSelected ? Colors.green : Colors.black,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
-                  ],
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height / 1.5,
+                  width: MediaQuery.of(context).size.width,
+                  child: lat == null
+                      ? Center(child: LoadingWidget2(context))
+                      : GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                              double.parse(lat ?? ""),
+                              double.parse(long ?? ""),
+                            ),
+                            zoom: 13.5,
+                          ),
+                          markers: {
+                            Marker(
+                              visible: true,
+                              draggable: true,
+                              icon: BitmapDescriptor.defaultMarkerWithHue(90),
+                              markerId: const MarkerId("currentLocation"),
+                              position: LatLng(
+                                double.parse(lat ?? ""),
+                                double.parse(long ?? ""),
+                              ),
+                            ),
+                            Marker(
+                              markerId: const MarkerId("destination"),
+                              position: destination,
+                            ),
+                          },
+                          polylines: {
+                            Polyline(
+                              visible: true,
+                              jointType: JointType.mitered,
+                              polylineId: const PolylineId("route"),
+                              points: polylineCoordinates,
+                              color: Colors.blue,
+                              width: 6,
+                            ),
+                          },
+                          onMapCreated: (mapController) {
+                            _controller.complete(mapController);
+                          },
+                        ),
                 ),
-              );
-            }),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20, right: 20),
-          //   child: TextFormField(
-          //     // readOnly: true,
-          //     // onTap: () {
-          //     //   showPlacePicker("pl");
-          //     // },
-          //     controller: pickupLocationcontroller,
-          //     decoration: InputDecoration(
-          //       prefixIcon: const Icon(
-          //         Icons.location_on,
-          //         color: AppColors.tabtextColor,
-          //       ),
-          //       hintText: 'Pickup Location',
-          //       labelText: 'Pickup Location',
-          //       hintStyle: const TextStyle(fontSize: 13),
-          //       contentPadding: const EdgeInsets.symmetric(vertical: 5),
-          //       focusedErrorBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       enabledBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       errorBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       focusedBorder: OutlineInputBorder(
-          //         borderSide: const BorderSide(color: AppColors.primary),
-          //         borderRadius: BorderRadius.circular(8),
-          //       ),
-          //     ),
-          //     validator: (value) {
-          //       if (value!.isEmpty) {
-          //         return 'Please Enter Pickup Location';
-          //       }
-          //       return null; // Return null if the input is valid
-          //     },
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 20,
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 20, right: 20),
-          //   child: TextFormField(
-          //     // readOnly: true,
-          //     // onTap: () {
-          //     //   showPlacePicker("dl");
-          //     // },
-          //     controller: droplocationcontroller,
-          //     decoration: InputDecoration(
-          //       prefixIcon: const Icon(
-          //         Icons.location_on,
-          //         color: AppColors.tabtextColor,
-          //       ),
-          //       hintText: 'Drop Location',
-          //       labelText: "Drop Location`",
-          //       hintStyle: const TextStyle(fontSize: 13),
-          //       contentPadding: const EdgeInsets.symmetric(vertical: 5),
-          //       focusedErrorBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       enabledBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       errorBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(8),
-          //           borderSide:
-          //               const BorderSide(color: AppColors.primary, width: 2)),
-          //       focusedBorder: OutlineInputBorder(
-          //         borderSide: const BorderSide(color: AppColors.primary),
-          //         borderRadius: BorderRadius.circular(8),
-          //       ),
-          //     ),
-          //     validator: (value) {
-          //       if (value!.isEmpty) {
-          //         return 'Please Enter Drop Location';
-          //       }
-          //       return null; // Return null if the input is valid
-          //     },
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     if (pickupLocationcontroller.text == '') {
-          //       Fluttertoast.showToast(msg: 'Please Select Pickup Location');
-          //     } else if (droplocationcontroller.text == '') {
-          //       Fluttertoast.showToast(msg: 'Please Select Drop Location');
-          //     } else {
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => bookingScr(
-          //             pickupLocation: pickupLocationcontroller.text.toString(),
-          //             droplocation: droplocationcontroller.text.toString(),
-          //           ),
-          //         ),
-          //       );
-          //     }
-          //   },
-          //   child: Container(
-          //     width: 320,
-          //     height: 40,
-          //     decoration: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(10),
-          //         color: AppColors.primary),
-          //     child: const Center(
-          //         child: Text(
-          //       'Search',
-          //       style:
-          //           TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          //     )),
-          //   ),
-          // )
-        ]),
+                Positioned(
+                  top: 10,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 4),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "From......",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              color: Colors.red,
+                            ),
+                            SizedBox(
+                              width: 300,
+                              child: Text(
+                                maxLines: 2,
+                                currentAddres ?? "Fetching address...",
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Text(
+                          "Where......",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlacePicker(
+                                  apiKey: Platform.isAndroid
+                                      ? "AIzaSyBWG0ZCi63QT7H6rDeP7FUTxP12GHhwrZM"
+                                      : "AIzaSyBWG0ZCi63QT7H6rDeP7FUTxP12GHhwrZM",
+                                  onPlacePicked: (result) {
+                                    print(result.formattedAddress);
+                                    setState(() {
+                                      dropLocation =
+                                          result.formattedAddress.toString();
+                                      dropLat = result.geometry!.location.lat
+                                          .toString();
+                                      dropLong = result.geometry!.location.lng
+                                          .toString();
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  initialPosition:
+                                      const LatLng(22.719568, 75.857727),
+                                  useCurrentLocation: true,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.green,
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 300,
+                                child: Text(
+                                  dropLocation != null
+                                      ? "$dropLocation"
+                                      : "Drop Location",
+                                  maxLines: 2,
+                                  style: dropLocation != null
+                                      ? const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500)
+                                      : const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 20,
+              runSpacing: 20,
+              children: List.generate(cabList.length, (index) {
+                final option = cabList[index];
+                final isSelected = selectedIndex == index;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = index;
+                      cabId = cabList[index].id.toString();
+                      print("is cab $cabId");
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor:
+                            isSelected ? Colors.green : Colors.grey[300],
+                        child: Image.network(
+                          "${option.image}",
+                          height: 50,
+                          width: 50,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        option.type.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: isSelected ? Colors.green : Colors.black,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 20, right: 20),
+            //   child: TextFormField(
+            //     // readOnly: true,
+            //     // onTap: () {
+            //     //   showPlacePicker("pl");
+            //     // },
+            //     controller: pickupLocationcontroller,
+            //     decoration: InputDecoration(
+            //       prefixIcon: const Icon(
+            //         Icons.location_on,
+            //         color: AppColors.tabtextColor,
+            //       ),
+            //       hintText: 'Pickup Location',
+            //       labelText: 'Pickup Location',
+            //       hintStyle: const TextStyle(fontSize: 13),
+            //       contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            //       focusedErrorBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       enabledBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       errorBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       focusedBorder: OutlineInputBorder(
+            //         borderSide: const BorderSide(color: AppColors.primary),
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //     ),
+            //     validator: (value) {
+            //       if (value!.isEmpty) {
+            //         return 'Please Enter Pickup Location';
+            //       }
+            //       return null; // Return null if the input is valid
+            //     },
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 20, right: 20),
+            //   child: TextFormField(
+            //     // readOnly: true,
+            //     // onTap: () {
+            //     //   showPlacePicker("dl");
+            //     // },
+            //     controller: droplocationcontroller,
+            //     decoration: InputDecoration(
+            //       prefixIcon: const Icon(
+            //         Icons.location_on,
+            //         color: AppColors.tabtextColor,
+            //       ),
+            //       hintText: 'Drop Location',
+            //       labelText: "Drop Location`",
+            //       hintStyle: const TextStyle(fontSize: 13),
+            //       contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            //       focusedErrorBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       enabledBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       errorBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //           borderSide:
+            //               const BorderSide(color: AppColors.primary, width: 2)),
+            //       focusedBorder: OutlineInputBorder(
+            //         borderSide: const BorderSide(color: AppColors.primary),
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //     ),
+            //     validator: (value) {
+            //       if (value!.isEmpty) {
+            //         return 'Please Enter Drop Location';
+            //       }
+            //       return null; // Return null if the input is valid
+            //     },
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            InkWell(
+              onTap: () {
+                if (dropLocation == null || dropLocation!.isEmpty) {
+                  Fluttertoast.showToast(msg: "Please enter drop location");
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SelectVehicle(
+                      cabId: cabId.toString(),
+                      dropAddress: dropLocation!,
+                      pickAddress: currentAddres ?? '',
+                      dropLat: dropLat?.toString() ?? '',
+                      dropLng: dropLong?.toString() ?? '',
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: 320,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.primary,
+                ),
+                child: const Center(
+                  child: Text(
+                    'Continue',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
       ),
     );
 // Scaffold(
@@ -742,6 +883,8 @@ class _HomeScrState extends State<HomeScr> {
 // );
   }
 
+  String? cabId;
+
   Widget tabProfile(BuildContext context, String tabName) {
     return Container(
       height: 50,
@@ -785,10 +928,12 @@ class _HomeScrState extends State<HomeScr> {
     super.initState();
     getUserCurrentLocation();
     getuserdata();
+    getTripType();
   }
 
   String? name;
   String? email;
+  String? mobile;
   String? walletAmount;
   String? imagepath;
   bool isloading = false;
@@ -803,18 +948,44 @@ class _HomeScrState extends State<HomeScr> {
     var param = {
       'user_id': userId.toString(),
     };
-
+    print("herer data ${param}");
     apiBaseHelper.postAPICall(getprofileurl, param).then(
       (getDta) {
         bool error = getDta['status'];
         String msg = getDta['message'];
         if (error == true) {
           setState(() {
-            name = getDta['data']['username'].toString();
-            email = getDta['data']['email'].toString();
-            imagepath = getDta['data']['image_path'].toString();
-            walletAmount = getDta['data']['wallet_amount'].toString();
+            name = getDta['data']['username'] ?? mobile;
+            email = getDta['data']['email'] ?? mobile;
+            mobile = getDta['data']['mobile'] ?? mobile;
+            imagepath = getDta['data']['image_path'] ?? "";
+            walletAmount = getDta['data']['wallet_amount'] ?? "";
 
+            setState(() {
+              isloading = false;
+            });
+          });
+        } else {
+          setState(() {
+            isloading = false;
+          });
+        }
+      },
+    );
+  }
+
+  List<CabData> cabList = [];
+
+  getTripType() async {
+    setState(() {
+      isloading = true;
+    });
+    apiBaseHelper.getAPICall(getCabTypeurl).then(
+      (getDta) {
+        bool error = getDta['status'];
+        if (error == true) {
+          setState(() {
+            cabList = CabTypeModel.fromJson(getDta).needHelp ?? [];
             setState(() {
               isloading = false;
             });
@@ -859,65 +1030,64 @@ class _HomeScrState extends State<HomeScr> {
 
   bool isLoading = false;
 
-  List<BookingModelList> bookingList = [];
-  Future<void> getBooking() async {
-    setState(() {
-      isLoading = true;
-    });
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userId = prefs.getString('userId');
-
-    var param = {
-      'user_id': userId.toString(),
-    };
-
-    apiBaseHelper.postAPICall(getbookingurl, param).then(
-      (getDta) {
-        bool error = getDta['status'];
-        String msg = getDta['message'];
-        if (error == true) {
-          setState(() {
-            bookingList = BookingModel.fromJson(getDta).data ?? [];
-
-            setState(() {
-              isLoading = false;
-            });
-          });
-        } else {
-          setState(() {
-            isLoading = false;
-          });
-        }
-      },
-    );
-  }
-
-  String? lat;
-  String? long;
+  String? dropLat, dropLong, dropLocation;
 
   Position? currentLocation;
+  String? currentAddres;
+  //
+  // Future getUserCurrentLocation() async {
+  //   var status = await Permission.location.request();
+  //   if (status.isDenied) {
+  //   } else if (status.isGranted) {
+  //     await Geolocator.getCurrentPosition(
+  //             desiredAccuracy: LocationAccuracy.high)
+  //         .then((position) {
+  //       if (mounted)
+  //         setState(() {
+  //           currentLocation = position;
+  //           lat = currentLocation?.latitude.toString();
+  //           long = currentLocation?.longitude.toString();
+  //           currentAddres = currentLocation?.accuracy.toString();
+  //           destination =
+  //               LatLng(double.parse(lat ?? ""), double.parse(long ?? ""));
+  //         });
+  //     });
+  //     print("LOCATION===" + currentLocation.toString());
+  //     //updateDriverLocation();
+  //   } else if (status.isPermanentlyDenied) {
+  //     openAppSettings();
+  //   }
+  // }
 
-  Future getUserCurrentLocation() async {
-    var status = await Permission.location.request();
-    if (status.isDenied) {
-    } else if (status.isGranted) {
-      await Geolocator.getCurrentPosition(
-              desiredAccuracy: LocationAccuracy.high)
-          .then((position) {
-        if (mounted)
-          setState(() {
-            currentLocation = position;
-            lat = currentLocation?.latitude.toString();
-            long = currentLocation?.longitude.toString();
+  Future<void> getUserCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      print("checking permission here $permission");
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    }
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    lat = position.latitude.toString();
+    long = position.longitude.toString();
 
-            destination =
-                LatLng(double.parse(lat ?? ""), double.parse(long ?? ""));
-          });
+    List<Placemark> placemark = await placemarkFromCoordinates(
+        double.parse(lat!), double.parse(long!),
+        localeIdentifier: "en");
+    if (mounted) {
+      setState(() {
+        currentAddres =
+            "${placemark[0].street}, ${placemark[0].subLocality}, ${placemark[0].locality}";
+        lat = position.latitude.toString();
+        long = position.longitude.toString();
+        destination = LatLng(double.parse(lat ?? ""), double.parse(long ?? ""));
+        print('Latitude============= $lat');
+        print('Longitude************* $long');
+        print('Current Addresssssss $currentAddres');
       });
-      print("LOCATION===" + currentLocation.toString());
-      //updateDriverLocation();
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
     }
   }
 
@@ -926,34 +1096,34 @@ class _HomeScrState extends State<HomeScr> {
   static LatLng destination =
       LatLng(double.parse("22.719568"), double.parse("75.857727"));
 
-  void showPlacePicker(String val) async {
-    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>
-            PlacePicker("AIzaSyDPsdTq-a4AHYHSNvQsdAlZgWvRu11T9pM")));
-
-    // Check if the user picked a place
-    if (result != null) {
-      if (val == "pl") {
-        setState(() {
-          pickupLocationcontroller.text = '${result.formattedAddress}';
-          print(pickupLocationcontroller.text);
-        });
-      } else {
-        setState(() {
-          droplocationcontroller.text = '${result.formattedAddress}';
-          print(droplocationcontroller.text);
-
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => bookingScr(
-                    pickupLocation: pickupLocationcontroller.text.toString(),
-                    droplocation: droplocationcontroller.text.toString()),
-              ));
-        });
-      }
-    }
-  }
+  // void showPlacePicker(String val) async {
+  //   LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
+  //       builder: (context) =>
+  //           PlacePicker("AIzaSyBWG0ZCi63QT7H6rDeP7FUTxP12GHhwrZM")));
+  //
+  //   // Check if the user picked a place
+  //   if (result != null) {
+  //     if (val == "pl") {
+  //       setState(() {
+  //         pickupLocationcontroller.text = '${result.formattedAddress}';
+  //         print(pickupLocationcontroller.text);
+  //       });
+  //     } else {
+  //       setState(() {
+  //         droplocationcontroller.text = '${result.formattedAddress}';
+  //         print(droplocationcontroller.text);
+  //
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => bookingScr(
+  //                   pickupLocation: pickupLocationcontroller.text.toString(),
+  //                   droplocation: droplocationcontroller.text.toString()),
+  //             ));
+  //       });
+  //     }
+  //   }
+  // }
 }
 
 class RideOption {

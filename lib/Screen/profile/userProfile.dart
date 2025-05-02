@@ -65,10 +65,10 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   Text(
                     "${email ?? ""}",
-                    style:
-                        TextStyle(color: AppColors.tabtextColor, fontSize: 14),
+                    style: const TextStyle(
+                        color: AppColors.tabtextColor, fontSize: 14),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Container(
@@ -87,50 +87,55 @@ class _UserProfileState extends State<UserProfile> {
                           child: tabProfile(context, "Update Profile"),
                         ),
                         InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NotificationScr(),
-                                  ));
-                            },
-                            child: tabProfile(context, "Notifications")),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const NotificationScr(),
+                              ),
+                            );
+                          },
+                          child: tabProfile(context, "Notifications"),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Tranjection(walletBalance: walletAmount),
+                                ));
+                          },
+                          child: tabProfile(context, "Wallet"),
+                        ),
                         InkWell(
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Tranjection(
-                                        walletBalance: walletAmount),
-                                  ));
-                            },
-                            child: tabProfile(context, "Wallet")),
-                        InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyblookingScr(),
+                                    builder: (context) => const MyblookingScr(),
                                   ));
                             },
                             child: tabProfile(context, "My Booking")),
                         InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangePasswordinHome(),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ChangePasswordinHome(),
+                                ),
+                              );
                             },
                             child: tabProfile(context, "Change Password")),
                         InkWell(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PrivecyScr(),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PrivecyScr(),
+                                ),
+                              );
                             },
                             child: tabProfile(context, 'Privacy Policy')),
                         InkWell(

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:eco_rider_user/Api%20services/api_services/apiConstants.dart';
-import 'package:eco_rider_user/Screen/dashboard/dashboardScreen.dart';
+import 'package:eco_rider_user/Screen/homepage/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -66,10 +66,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     },
                     child: CircleAvatar(
                       backgroundColor: AppColors.primary,
-                      radius: 55,
+                      radius: 75,
                       child: CircleAvatar(
                         backgroundImage: FileImage(File(userImg!.path)),
-                        radius: 50,
+                        radius: 70,
                         child: const Center(
                           child: Icon(
                             Icons.camera_alt_outlined,
@@ -85,12 +85,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     },
                     child: CircleAvatar(
                       backgroundColor: AppColors.primary,
-                      radius: 55,
+                      radius: 75,
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(
                           imagepath.toString(),
                         ),
-                        radius: 50,
+                        radius: 70,
                         child: const Center(
                           child: Icon(
                             Icons.camera_alt_outlined,
@@ -141,7 +141,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               },
             ),
             const SizedBox(
-              height: 5,
+              height: 9,
             ),
             TextFormField(
               controller: emailC,
@@ -154,13 +154,15 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 hintStyle: const TextStyle(fontSize: 13),
                 contentPadding: const EdgeInsets.symmetric(vertical: 5),
                 focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                        color: AppColors.tabtextColor, width: 1),),
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide:
+                      const BorderSide(color: AppColors.tabtextColor, width: 1),
+                ),
                 enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                        color: AppColors.tabtextColor, width: 1),),
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide:
+                      const BorderSide(color: AppColors.tabtextColor, width: 1),
+                ),
                 errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                     borderSide: const BorderSide(
@@ -180,7 +182,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               },
             ),
             const SizedBox(
-              height: 8,
+              height: 9,
             ),
             TextFormField(
               maxLength: 10,
@@ -222,7 +224,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               },
             ),
             const SizedBox(
-              height: 5,
+              height: 9,
             ),
             Container(
               height: 50,
@@ -275,113 +277,113 @@ class _UpdateProfileState extends State<UpdateProfile> {
             const SizedBox(
               height: 8,
             ),
-            TextFormField(
-              controller: registrationCtr,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(
-                  Icons.app_registration,
-                  color: AppColors.tabtextColor,
-                ),
-                hintText: 'License No.',
-                hintStyle: const TextStyle(fontSize: 13),
-                contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                        color: AppColors.tabtextColor, width: 1)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                        color: AppColors.tabtextColor, width: 1)),
-                errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                        color: AppColors.tabtextColor, width: 1)),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: AppColors.tabtextColor),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please Enter Email';
-                } else if (!value.contains('@') || !value.contains(".com")) {
-                  return 'Please Enter Valid Email';
-                }
-                return null; // Return null if the input is valid
-              },
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "License Front Image",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    "License Back Image",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    showAlertDialog(context, 'license_front');
-                  },
-                  child: Container(
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: licenseFrontImg != null
-                        ? Image.file(
-                            File(licenseFrontImg!.path),
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            "https://developmentalphawizz.com/eco_rider/upload/customer_profiles/$licenseFront",
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    showAlertDialog(context, 'license_back');
-                  },
-                  child: Container(
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: licenseBackImg != null
-                        ? Image.file(
-                            File(licenseBackImg!.path),
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            "https://developmentalphawizz.com/eco_rider/upload/customer_profiles/$licesneBack",
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-              ],
-            ),
+            // TextFormField(
+            //   controller: registrationCtr,
+            //   decoration: InputDecoration(
+            //     prefixIcon: const Icon(
+            //       Icons.app_registration,
+            //       color: AppColors.tabtextColor,
+            //     ),
+            //     hintText: 'License No.',
+            //     hintStyle: const TextStyle(fontSize: 13),
+            //     contentPadding: const EdgeInsets.symmetric(vertical: 5),
+            //     focusedErrorBorder: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(15),
+            //         borderSide: const BorderSide(
+            //             color: AppColors.tabtextColor, width: 1)),
+            //     enabledBorder: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(15),
+            //         borderSide: const BorderSide(
+            //             color: AppColors.tabtextColor, width: 1)),
+            //     errorBorder: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(15),
+            //         borderSide: const BorderSide(
+            //             color: AppColors.tabtextColor, width: 1)),
+            //     focusedBorder: OutlineInputBorder(
+            //       borderSide: const BorderSide(color: AppColors.tabtextColor),
+            //       borderRadius: BorderRadius.circular(25),
+            //     ),
+            //   ),
+            //   validator: (value) {
+            //     if (value!.isEmpty) {
+            //       return 'Please Enter Email';
+            //     } else if (!value.contains('@') || !value.contains(".com")) {
+            //       return 'Please Enter Valid Email';
+            //     }
+            //     return null; // Return null if the input is valid
+            //   },
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // const Padding(
+            //   padding: EdgeInsets.only(left: 5, right: 5),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         "License Front Image",
+            //         style: TextStyle(fontWeight: FontWeight.w600),
+            //       ),
+            //       Text(
+            //         "License Back Image",
+            //         style: TextStyle(fontWeight: FontWeight.w600),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 5,
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     InkWell(
+            //       onTap: () {
+            //         showAlertDialog(context, 'license_front');
+            //       },
+            //       child: Container(
+            //         height: 150,
+            //         width: 150,
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(10),
+            //           border: Border.all(color: Colors.black),
+            //         ),
+            //         child: licenseFrontImg != null
+            //             ? Image.file(
+            //                 File(licenseFrontImg!.path),
+            //                 fit: BoxFit.cover,
+            //               )
+            //             : Image.network(
+            //                 "https://developmentalphawizz.com/eco_rider/upload/customer_profiles/$licenseFront",
+            //                 fit: BoxFit.cover,
+            //               ),
+            //       ),
+            //     ),
+            //     InkWell(
+            //       onTap: () {
+            //         showAlertDialog(context, 'license_back');
+            //       },
+            //       child: Container(
+            //         height: 150,
+            //         width: 150,
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(10),
+            //           border: Border.all(color: Colors.black),
+            //         ),
+            //         child: licenseBackImg != null
+            //             ? Image.file(
+            //                 File(licenseBackImg!.path),
+            //                 fit: BoxFit.cover,
+            //               )
+            //             : Image.network(
+            //                 "https://developmentalphawizz.com/eco_rider/upload/customer_profiles/$licesneBack",
+            //                 fit: BoxFit.cover,
+            //               ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(
               height: 20,
             ),
@@ -466,7 +468,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     var param = {
       'user_id': userId.toString(),
     };
-
+    print("get data $param");
     apiBaseHelper.postAPICall(getprofileurl, param).then(
       (getDta) {
         bool error = getDta['status'];
@@ -474,20 +476,20 @@ class _UpdateProfileState extends State<UpdateProfile> {
         if (error == true) {
           print(
               "===my technic==== api===${getDta['data']['gender'].toString()}===============");
-          String getGender = getDta['data']['gender'].toString();
+          String getGender = getDta['data']['gender'] ?? "";
           String capitalizedA =
               "${getGender[0].toUpperCase()}${getGender.substring(1)}";
 
           setState(() {
             print("===my technic=====convert==$capitalizedA===============");
-            _selectvehiclecat = capitalizedA.toString();
-            ownernameController.text = getDta['data']['username'].toString();
-            emailC.text = getDta['data']['email'].toString();
-            registrationCtr.text = getDta['data']['rc_number'].toString();
-            mobilecontroller.text = getDta['data']['mobile'].toString();
-            imagepath = getDta['data']['image_path'].toString();
-            licenseFront = getDta['data']['license_front_image'].toString();
-            licesneBack = getDta['data']['license_back_image'].toString();
+            _selectvehiclecat = capitalizedA ?? "";
+            ownernameController.text = getDta['data']['username'] ?? "";
+            emailC.text = getDta['data']['email'] ?? "";
+            registrationCtr.text = getDta['data']['rc_number'] ?? "";
+            mobilecontroller.text = getDta['data']['mobile'] ?? "";
+            imagepath = getDta['data']['image_path'] ?? "";
+            licenseFront = getDta['data']['license_front_image'] ?? "";
+            licesneBack = getDta['data']['license_back_image'] ?? "";
             setState(() {
               isLoading = false;
             });
@@ -667,13 +669,14 @@ class _UpdateProfileState extends State<UpdateProfile> {
       var finalresult = jsonDecode(result);
 
       if (finalresult['status'] == true) {
-        Fluttertoast.showToast(msg: "${finalresult['message'].toString()}");
+        Fluttertoast.showToast(msg: finalresult['message'].toString());
 
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Dashboard(),
-            ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScr(),
+          ),
+        );
       }
     } else {
       print(response.reasonPhrase);
