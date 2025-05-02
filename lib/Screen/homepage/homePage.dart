@@ -381,7 +381,7 @@ class _HomeScrState extends State<HomeScr> {
                         const Text(
                           "From......",
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
                           height: 5,
@@ -398,7 +398,7 @@ class _HomeScrState extends State<HomeScr> {
                                 maxLines: 2,
                                 currentAddres ?? "Fetching address...",
                                 style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                    fontSize: 13, fontWeight: FontWeight.w500),
                               ),
                             ),
                           ],
@@ -407,9 +407,9 @@ class _HomeScrState extends State<HomeScr> {
                           height: 5,
                         ),
                         const Text(
-                          "Where......",
+                          "Where to go....",
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
                           height: 5,
@@ -448,9 +448,9 @@ class _HomeScrState extends State<HomeScr> {
                                 Icons.location_on_outlined,
                                 color: Colors.green,
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 3),
                               SizedBox(
-                                width: 300,
+                                width: 280,
                                 child: Text(
                                   dropLocation != null
                                       ? "$dropLocation"
@@ -458,10 +458,10 @@ class _HomeScrState extends State<HomeScr> {
                                   maxLines: 2,
                                   style: dropLocation != null
                                       ? const TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w500)
                                       : const TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w500),
                                 ),
                               ),

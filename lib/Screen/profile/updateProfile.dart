@@ -185,6 +185,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               height: 9,
             ),
             TextFormField(
+              readOnly: true,
               maxLength: 10,
               controller: mobilecontroller,
               keyboardType: TextInputType.number,
@@ -237,7 +238,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
               child: Container(
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     const Icon(
@@ -253,10 +254,14 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(
-                                color: AppColors.tabtextColor, fontSize: 13),
+                              color: AppColors.tabtextColor,
+                              fontSize: 13,
+                            ),
                           ),
-                        ), // Not necessary for Option 1
-                        value: _selectvehiclecat,
+                        ),
+                        value: selectvehicle_List.contains(_selectvehiclecat)
+                            ? _selectvehiclecat
+                            : null,
                         onChanged: (newValue) {
                           setState(() {
                             _selectvehiclecat = newValue.toString();
@@ -384,7 +389,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             //     ),
             //   ],
             // ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Padding(
@@ -453,7 +458,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   var imagepath, licenseFront, licesneBack;
   String? _selectvehiclecat;
-  List selectvehicle_List = ['Male', 'Female'];
+  List<String> selectvehicle_List = ['Male', 'Female'];
   final emailC = TextEditingController();
   TextEditingController ownernameController = TextEditingController();
   TextEditingController mobilecontroller = TextEditingController();
@@ -462,27 +467,37 @@ class _UpdateProfileState extends State<UpdateProfile> {
     setState(() {
       isLoading = true;
     });
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('userId');
 
     var param = {
       'user_id': userId.toString(),
     };
+
     print("get data $param");
+
     apiBaseHelper.postAPICall(getprofileurl, param).then(
       (getDta) {
         bool error = getDta['status'];
         String msg = getDta['message'];
+
         if (error == true) {
-          print(
-              "===my technic==== api===${getDta['data']['gender'].toString()}===============");
           String getGender = getDta['data']['gender'] ?? "";
-          String capitalizedA =
-              "${getGender[0].toUpperCase()}${getGender.substring(1)}";
+          String capitalizedA = "";
+          if (getGender.isNotEmpty) {
+            capitalizedA =
+                "${getGender[0].toUpperCase()}${getGender.substring(1)}";
+          }
+
+          // Ensure value is only set if it matches the dropdown options
+          if (selectvehicle_List.contains(capitalizedA)) {
+            _selectvehiclecat = capitalizedA;
+          } else {
+            _selectvehiclecat = null;
+          }
 
           setState(() {
-            print("===my technic=====convert==$capitalizedA===============");
-            _selectvehiclecat = capitalizedA ?? "";
             ownernameController.text = getDta['data']['username'] ?? "";
             emailC.text = getDta['data']['email'] ?? "";
             registrationCtr.text = getDta['data']['rc_number'] ?? "";
@@ -490,9 +505,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
             imagepath = getDta['data']['image_path'] ?? "";
             licenseFront = getDta['data']['license_front_image'] ?? "";
             licesneBack = getDta['data']['license_back_image'] ?? "";
-            setState(() {
-              isLoading = false;
-            });
+            isLoading = false;
           });
         } else {
           setState(() {
@@ -645,32 +658,31 @@ class _UpdateProfileState extends State<UpdateProfile> {
     if (userImg != null) {
       request.files
           .add(await http.MultipartFile.fromPath('user_image', userImg!.path));
-
       print(request.files);
     }
-    if (userImg != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-          'license_front_image', userImg!.path));
-
-      print(request.files);
-    }
-    if (userImg != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-          'license_back_image', userImg!.path));
-
-      print(request.files);
-    }
+    // if (userImg != null) {
+    //   request.files.add(await http.MultipartFile.fromPath(
+    //       'license_front_image', userImg!.path));
+    //
+    //   print(request.files);
+    // }
+    // if (userImg != null) {
+    //   request.files.add(await http.MultipartFile.fromPath(
+    //       'license_back_image', userImg!.path));
+    //
+    //   print(request.files);
+    // }
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
+      print("rdsdsd ${response.statusCode} ");
       var result = await response.stream.bytesToString();
       var finalresult = jsonDecode(result);
-
+      print("fjajak ${finalresult}");
       if (finalresult['status'] == true) {
         Fluttertoast.showToast(msg: finalresult['message'].toString());
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
