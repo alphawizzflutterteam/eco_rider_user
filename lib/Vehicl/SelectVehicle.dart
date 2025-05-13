@@ -22,13 +22,21 @@ import '../Model/VehicleModel.dart';
 import '../Widget/custom_app_button.dart';
 
 class SelectVehicle extends StatefulWidget {
-  String? cabId, dropAddress, pickAddress, dropLat, dropLng;
+  String? cabId,
+      dropAddress,
+      pickAddress,
+      dropLat,
+      dropLng,
+      pickupLat,
+      pickupLong;
   SelectVehicle(
       {Key? key,
       this.cabId,
       this.dropAddress,
       this.pickAddress,
       this.dropLat,
+      this.pickupLong,
+      this.pickupLat,
       this.dropLng})
       : super(key: key);
 
@@ -43,12 +51,16 @@ class _SelectVehicleState extends State<SelectVehicle> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    lat = widget.pickupLat;
+    long = widget.pickupLong;
+    destination = LatLng(double.parse(widget.dropLat ?? '22.719568'),
+        double.parse(widget.dropLng ?? '75.857727'));
     _razorpayy = Razorpay();
     _razorpayy!.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpayy!.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpayy!.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
-    getUserCurrentLocation();
+    //getUserCurrentLocation();
     getVehicle();
     getPromoList();
   }
@@ -129,8 +141,8 @@ class _SelectVehicleState extends State<SelectVehicle> {
       // 'duration_time': '',
       'payment_type': _paymentMethod.toString(),
       "transaction_id": transactionId.toString(),
-      'latitude': lat.toString(),
-      'longitude': long.toString(),
+      'latitude': widget.pickupLat, //lat.toString(),
+      'longitude': widget.pickupLong //long.toString(),
     };
     print("add booking parar $param");
     apiBaseHelper.postAPICall(bookindurl, param).then(
@@ -176,6 +188,10 @@ class _SelectVehicleState extends State<SelectVehicle> {
         if (error == true) {
           setState(() {
             vehcileList = VehicleModel.fromJson(getDta).data ?? [];
+
+            selectVehicleId =
+                vehcileList.isNotEmpty ? vehcileList.first.id : null;
+
             setState(() {
               isLoading = false;
             });
@@ -214,6 +230,7 @@ class _SelectVehicleState extends State<SelectVehicle> {
       'car_model_id': selectVehicleId.toString(),
       'type': isOn == false ? "Auto" : "Manual",
     };
+
     print("cab charge $param");
     apiBaseHelper.postAPICall(getChargeurl, param).then(
       (getDta) {
@@ -249,6 +266,7 @@ class _SelectVehicleState extends State<SelectVehicle> {
   String? promoCode;
 
   List<PromoData> promoList = [];
+
   Future<void> getPromoList() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('userId');
@@ -325,7 +343,7 @@ class _SelectVehicleState extends State<SelectVehicle> {
 
   List<LatLng> polylineCoordinates = [];
 
-  static LatLng destination = const LatLng(22.719568, 75.857727);
+  LatLng destination = const LatLng(22.719568, 75.857727);
   bool showCarTypeContainer = true;
 
   Future<void> getUserCurrentLocation() async {
@@ -361,7 +379,6 @@ class _SelectVehicleState extends State<SelectVehicle> {
 
         print('Latitude============= $lat');
         print('Longitude************* $long');
-        print('Current Addresssssss $currentAddres');
       });
     }
 
@@ -391,10 +408,15 @@ class _SelectVehicleState extends State<SelectVehicle> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
+
     if (date != null) {
-      setState(() {
-        selectedDate = date;
-      });
+      if (selectedEndDate != null && date.isAfter(selectedEndDate!)) {
+        Fluttertoast.showToast(msg: 'Start date should be less then end date');
+      } else {
+        setState(() {
+          selectedDate = date;
+        });
+      }
     }
   }
 
@@ -406,9 +428,15 @@ class _SelectVehicleState extends State<SelectVehicle> {
       lastDate: DateTime(2100),
     );
     if (date != null) {
-      setState(() {
-        selectedEndDate = date;
-      });
+      if (selectedDate != null && date.isBefore(selectedDate!)) {
+        ;
+        Fluttertoast.showToast(
+            msg: 'End date should be grater then start date');
+      } else {
+        setState(() {
+          selectedEndDate = date;
+        });
+      }
     }
   }
 
@@ -684,10 +712,41 @@ class _SelectVehicleState extends State<SelectVehicle> {
                 onTap: () async {
                   TimeOfDay? pickedtime = await pickTime(context, selectedTime);
                   if (pickedtime != null) {
-                    setState(() {
-                      selectedTime = pickedtime;
-                      timeCtr.text = pickedtime.format(context).toString();
-                    });
+                    if (selectedEndTime != null && selectedDate != null) {
+                      final startDateTime = DateTime(
+                        selectedDate!.year,
+                        selectedDate!.month,
+                        selectedDate!.day,
+                        pickedtime.hour,
+                        pickedtime.minute,
+                      );
+                      final endDateTime = DateTime(
+                        selectedEndDate!.year,
+                        selectedEndDate!.month,
+                        selectedEndDate!.day,
+                        selectedEndTime!.hour,
+                        selectedEndTime!.minute,
+                      );
+
+                      if (startDateTime.isAfter(endDateTime)) {
+                        Fluttertoast.showToast(
+                            msg: 'Start time should be less then End Time');
+                      } else {
+                        setState(() {
+                          selectedEndTime = pickedtime;
+                          timeEndCtr.text =
+                              pickedtime.format(context).toString();
+                          getCharges();
+                        });
+                      }
+                    } else if (selectedDate == null) {
+                      Fluttertoast.showToast(msg: 'select start date first');
+                    } else {
+                      setState(() {
+                        selectedTime = pickedtime;
+                        timeCtr.text = pickedtime.format(context).toString();
+                      });
+                    }
                   }
                 },
                 child: Text(
@@ -706,14 +765,54 @@ class _SelectVehicleState extends State<SelectVehicle> {
               const SizedBox(width: 5),
               InkWell(
                 onTap: () async {
-                  TimeOfDay? pickedtime =
-                      await pickTime(context, selectedEndTime);
-                  if (pickedtime != null) {
-                    setState(() {
-                      selectedEndTime = pickedtime;
-                      timeEndCtr.text = pickedtime.format(context).toString();
-                      getCharges();
-                    });
+                  if (/*selectedTime == null*/ false) {
+                    Fluttertoast.showToast(
+                        msg: 'Please select start time first');
+                  } else {
+                    TimeOfDay? pickedtime =
+                        await pickTime(context, selectedEndTime);
+                    print('${pickedtime.toString()}____________erwer');
+                    if (pickedtime != null) {
+                      if (selectedTime != null && selectedEndDate != null) {
+                        final startDateTime = DateTime(
+                          selectedDate!.year,
+                          selectedDate!.month,
+                          selectedDate!.day,
+                          selectedTime!.hour,
+                          selectedTime!.minute,
+                        );
+                        final endDateTime = DateTime(
+                          selectedEndDate!.year,
+                          selectedEndDate!.month,
+                          selectedEndDate!.day,
+                          pickedtime.hour,
+                          pickedtime.minute,
+                        );
+
+                        if (endDateTime.isBefore(startDateTime)) {
+                          Fluttertoast.showToast(
+                              msg: 'End time should be grater then Start Time');
+                        } else {
+                          setState(() {
+                            selectedEndTime = pickedtime;
+                            timeEndCtr.text =
+                                pickedtime.format(context).toString();
+                            getCharges();
+                          });
+                        }
+                      } else if (selectedEndDate == null) {
+                        Fluttertoast.showToast(msg: 'select end date first');
+                      } else if (selectedTime == null) {
+                        Fluttertoast.showToast(msg: 'select start date first');
+                      } else {
+                        setState(() {
+                          selectedEndTime = pickedtime;
+                          timeEndCtr.text =
+                              pickedtime.format(context).toString();
+                          getCharges();
+                        });
+                      }
+                    }
                   }
                 },
                 child: Text(

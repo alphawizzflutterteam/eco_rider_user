@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -590,7 +591,11 @@ class _MyblookingScrState extends State<MyblookingScr> {
                                                               _getStatusText(
                                                                   upcomingBookingList[
                                                                           index]
-                                                                      .status),
+                                                                      .status,
+                                                                  upcomingBookingList[
+                                                                              index]
+                                                                          .acceptReject ??
+                                                                      '0'),
                                                               style: const TextStyle(
                                                                   color: Colors
                                                                       .white),
@@ -1471,26 +1476,43 @@ class _MyblookingScrState extends State<MyblookingScr> {
     }
   }
 
-  String _getStatusText(String? status) {
-    print('i m here ${status}');
-    switch (status) {
-      case 'Processing':
-        return 'Pending'; // showing 'Pending' instead of 'Processing'
-      case 'Cancelled':
-        return 'Cancelled';
-      case 'Accepted':
-        return 'Accepted';
-      case 'complete':
-        return 'Completed';
-      default:
-        return 'Unknown'; // fallback text
+  String _getStatusText(String? status, String acceptReject) {
+    if (status == 'Processing' && acceptReject == '1') {
+      return 'Accepted';
+    } else if (status == 'Processing' && acceptReject == '6') {
+      return 'Processing';
+    } else if (status == 'Processing') {
+      return 'Pending';
+    } else if (status == 'Cancelled') {
+      return 'Cancelled';
+    } else if (status == 'Accepted') {
+      return 'Accepted';
+    } else if (status == 'complete') {
+      return 'Completed';
+    } else {
+      return 'Pending';
     }
+
+    // print('i m here ${status}');
+    // switch (status) {
+    //   case 'Processing':
+    //     return 'Pending'; // showing 'Pending' instead of 'Processing'
+    //   case 'Cancelled':
+    //     return 'Cancelled';
+    //   case 'Accepted':
+    //     return 'Accepted';
+    //   case 'complete':
+    //     return 'Completed';
+    //   default:
+    //     return 'Unknown'; // fallback text
+    // }
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    notificationListen();
     getBooking();
   }
 
@@ -1526,6 +1548,16 @@ class _MyblookingScrState extends State<MyblookingScr> {
             isLoading = false;
           });
         }
+      },
+    );
+  }
+
+  notificationListen() async {
+    FirebaseMessaging.onMessage.listen(
+      (event) {
+        print('____________________dsdsadsd');
+
+        getBooking();
       },
     );
   }

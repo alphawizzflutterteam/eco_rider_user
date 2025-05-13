@@ -130,6 +130,10 @@ class BookingDataModel {
   String? tripImage;
   String? carModel;
   String? carImage;
+  String? driverLat;
+  String? driverLong;
+  String? driverRating;
+  String? driverImage;
   dynamic userName;
 
   BookingDataModel(
@@ -229,7 +233,11 @@ class BookingDataModel {
       this.tripImage,
       this.carModel,
       this.carImage,
-      this.userName});
+      this.userName,
+      this.driverLat,
+      this.driverLong,
+      this.driverImage,
+      this.driverRating});
 
   BookingDataModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -329,5 +337,9 @@ class BookingDataModel {
     carModel = json['car_model'];
     carImage = json['car_image'];
     userName = json['user_name'];
+    driverLat = json['driver_lat'];
+    driverLong = json['driver_long'];
+    driverImage = json['driver_image'];
+    driverRating = json['driver_rating'];
   }
 }
