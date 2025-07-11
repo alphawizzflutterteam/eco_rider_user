@@ -209,6 +209,7 @@ class _MyblookingScrState extends State<MyblookingScr> {
       "rating": rating.toString(),
       "user_id": userId.toString(),
     };
+    print('PrintData:_____${param}______');
     apiBaseHelper.postAPICall(addReview, param).then(
       (getDta) {
         bool error = getDta['status'];
@@ -458,6 +459,8 @@ class _MyblookingScrState extends State<MyblookingScr> {
                                       itemCount:
                                           upcomingBookingList.length ?? 0,
                                       itemBuilder: (context, index) {
+                                        print(
+                                            'PrintDasdvsgdafata:_____${upcomingBookingList[index].ratingGiven}______');
                                         return InkWell(
                                           onTap: () {
                                             Navigator.push(
@@ -707,10 +710,13 @@ class _MyblookingScrState extends State<MyblookingScr> {
                                                   ),
                                                 ),
                                                 upcomingBookingList[index]
-                                                            .status ==
-                                                        "complete"
+                                                                .status ==
+                                                            "complete" &&
+                                                        upcomingBookingList[
+                                                                    index]
+                                                                .ratingGiven ==
+                                                            false
                                                     ? Container(
-                                                        // height: 50,
                                                         padding:
                                                             const EdgeInsets
                                                                 .only(
@@ -738,170 +744,333 @@ class _MyblookingScrState extends State<MyblookingScr> {
                                                           ),
                                                           onPressed: () {
                                                             showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return AlertDialog(
-                                                                    title: const Text(
-                                                                        "Add Review"),
-                                                                    content:
-                                                                        Container(
-                                                                      padding: const EdgeInsets
-                                                                          .all(
-                                                                          10),
-                                                                      child:
-                                                                          Column(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.min,
-                                                                        children: [
-                                                                          // const Text(
-                                                                          //   "Rate Vendor",
-                                                                          //   style:
-                                                                          //       TextStyle(
-                                                                          //     fontSize:
-                                                                          //         14.0,
-                                                                          //     fontWeight:
-                                                                          //         FontWeight.bold,
-                                                                          //     color: Colors
-                                                                          //         .black,
-                                                                          //   ),
-                                                                          // ),
-                                                                          const SizedBox(
+                                                              context: context,
+                                                              builder:
+                                                                  (BuildContext
+                                                                      context) {
+                                                                return AlertDialog(
+                                                                  title: const Text(
+                                                                      "Add Review"),
+                                                                  content:
+                                                                      Container(
+                                                                    padding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            10),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        const Divider(),
+                                                                        const SizedBox(
                                                                             height:
-                                                                                10,
+                                                                                10),
+                                                                        RatingBar(
+                                                                          initialRating:
+                                                                              rating,
+                                                                          direction:
+                                                                              Axis.horizontal,
+                                                                          allowHalfRating:
+                                                                              true,
+                                                                          itemCount:
+                                                                              5,
+                                                                          itemSize:
+                                                                              36,
+                                                                          ratingWidget:
+                                                                              RatingWidget(
+                                                                            full:
+                                                                                const Icon(Icons.star, color: Colors.orange),
+                                                                            half:
+                                                                                const Icon(Icons.star_half_rounded, color: Colors.grey),
+                                                                            empty:
+                                                                                const Icon(Icons.star_border_rounded, color: Colors.black),
                                                                           ),
-                                                                          const Divider(),
-                                                                          const SizedBox(
+                                                                          onRatingUpdate:
+                                                                              (rating1) {
+                                                                            setState(() {
+                                                                              rating = rating1;
+                                                                            });
+                                                                          },
+                                                                        ),
+                                                                        const SizedBox(
                                                                             height:
-                                                                                10,
-                                                                          ),
-                                                                          RatingBar(
-                                                                            initialRating:
-                                                                                rating,
-                                                                            direction:
-                                                                                Axis.horizontal,
-                                                                            allowHalfRating:
-                                                                                true,
-                                                                            itemCount:
-                                                                                5,
-                                                                            itemSize:
-                                                                                36,
-                                                                            ratingWidget:
-                                                                                RatingWidget(
-                                                                              full: const Icon(
-                                                                                Icons.star,
-                                                                                color: Colors.orange,
-                                                                              ),
-                                                                              half: const Icon(
-                                                                                Icons.star_half_rounded,
-                                                                                color: Colors.grey,
-                                                                              ),
-                                                                              empty: const Icon(
-                                                                                Icons.star_border_rounded,
-                                                                                color: Colors.black,
-                                                                              ),
+                                                                                10),
+                                                                        TextFormField(
+                                                                          controller:
+                                                                              desCon,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            hintText:
+                                                                                'Write Comment',
+                                                                            hintStyle:
+                                                                                const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+                                                                            border:
+                                                                                OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(5),
                                                                             ),
-                                                                            itemPadding:
-                                                                                EdgeInsets.zero,
-                                                                            onRatingUpdate:
-                                                                                (rating1) {
-                                                                              print(rating1);
-                                                                              setState(() {
-                                                                                rating = rating1;
-                                                                              });
-                                                                            },
                                                                           ),
-                                                                          const SizedBox(
+                                                                        ),
+                                                                        const SizedBox(
                                                                             height:
-                                                                                10,
-                                                                          ),
-                                                                          TextFormField(
-                                                                            controller:
-                                                                                desCon,
-                                                                            keyboardType:
-                                                                                TextInputType.text,
-                                                                            // validator: (value) {
-                                                                            //   if (value == null || value.isEmpty) {
-                                                                            //     return 'Please enter your mobile number';
-                                                                            //   } else if (value.length < 10 || value.length > 10) {
-                                                                            //     return "Mobile number must be 10 digits";
-                                                                            //   }
-                                                                            //   return null;
-                                                                            // },
+                                                                                10),
+                                                                        InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            rateDriver(
+                                                                              upcomingBookingList[index].driverId.toString(),
+                                                                              upcomingBookingList[index].uneaqueId.toString(),
+                                                                            );
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            height:
+                                                                                48,
                                                                             decoration:
-                                                                                InputDecoration(
-                                                                              // prefixIcon: const Icon(Icons.call_outlined),
-                                                                              counterText: "",
-                                                                              isDense: true,
-                                                                              hintText: 'Write Comment',
-                                                                              hintStyle: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-                                                                              border: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(5),
-                                                                              ),
+                                                                                BoxDecoration(
+                                                                              color: AppColors.primary,
+                                                                              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+                                                                              boxShadow: [
+                                                                                BoxShadow(
+                                                                                  color: AppColors.primary.withOpacity(0.5),
+                                                                                  offset: const Offset(1.1, 1.1),
+                                                                                  blurRadius: 10.0,
+                                                                                ),
+                                                                              ],
                                                                             ),
-                                                                          ),
-                                                                          // EntryField(
-                                                                          //   controller: desCon,
-                                                                          //   keyboardType: TextInputType.name,
-                                                                          //   label: "Write Comment",
-                                                                          // ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          InkWell(
-                                                                            onTap:
-                                                                                () {
-                                                                              rateDriver(upcomingBookingList[index].driverId.toString(), upcomingBookingList[index].uneaqueId.toString());
-                                                                              Navigator.pop(context);
-                                                                            },
                                                                             child:
-                                                                                Container(
-                                                                              height: 48,
-                                                                              decoration: BoxDecoration(
-                                                                                color: AppColors.primary,
-                                                                                borderRadius: const BorderRadius.all(
-                                                                                  Radius.circular(25.0),
-                                                                                ),
-                                                                                boxShadow: <BoxShadow>[
-                                                                                  BoxShadow(color: AppColors.primary.withOpacity(0.5), offset: const Offset(1.1, 1.1), blurRadius: 10.0),
-                                                                                ],
-                                                                              ),
-                                                                              child: const Center(
-                                                                                child: Text(
-                                                                                  "Rate Bookings",
-                                                                                  textAlign: TextAlign.left,
-                                                                                  style: TextStyle(
-                                                                                    fontWeight: FontWeight.w600,
-                                                                                    fontSize: 18,
-                                                                                    letterSpacing: 0.0,
-                                                                                    color: Colors.white,
-                                                                                  ),
+                                                                                const Center(
+                                                                              child: Text(
+                                                                                "Rate Bookings",
+                                                                                style: TextStyle(
+                                                                                  fontWeight: FontWeight.w600,
+                                                                                  fontSize: 18,
+                                                                                  color: Colors.white,
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                          )
-                                                                        ],
-                                                                      ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
-                                                                  );
-                                                                });
+                                                                  ),
+                                                                );
+                                                              },
+                                                            );
                                                           },
                                                           child: const Text(
                                                             'Rate Driver',
                                                             style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                       )
                                                     : const SizedBox()
+
+                                                // upcomingBookingList[index]
+                                                //             .status ==
+                                                //         "complete"
+                                                //     ? Container(
+                                                //         // height: 50,
+                                                //         padding:
+                                                //             const EdgeInsets
+                                                //                 .only(
+                                                //                 left: 10,
+                                                //                 right: 10,
+                                                //                 bottom: 10),
+                                                //         width: 300,
+                                                //         child: ElevatedButton(
+                                                //           style: ElevatedButton
+                                                //               .styleFrom(
+                                                //             backgroundColor:
+                                                //                 Colors.green,
+                                                //             padding:
+                                                //                 const EdgeInsets
+                                                //                     .symmetric(
+                                                //                     vertical:
+                                                //                         14),
+                                                //             shape:
+                                                //                 RoundedRectangleBorder(
+                                                //               borderRadius:
+                                                //                   BorderRadius
+                                                //                       .circular(
+                                                //                           10),
+                                                //             ),
+                                                //           ),
+                                                //           onPressed: () {
+                                                //             showDialog(
+                                                //                 context:
+                                                //                     context,
+                                                //                 builder:
+                                                //                     (BuildContext
+                                                //                         context) {
+                                                //                   return AlertDialog(
+                                                //                     title: const Text(
+                                                //                         "Add Review"),
+                                                //                     content:
+                                                //                         Container(
+                                                //                       padding: const EdgeInsets
+                                                //                           .all(
+                                                //                           10),
+                                                //                       child:
+                                                //                           Column(
+                                                //                         mainAxisSize:
+                                                //                             MainAxisSize.min,
+                                                //                         children: [
+                                                //                           // const Text(
+                                                //                           //   "Rate Vendor",
+                                                //                           //   style:
+                                                //                           //       TextStyle(
+                                                //                           //     fontSize:
+                                                //                           //         14.0,
+                                                //                           //     fontWeight:
+                                                //                           //         FontWeight.bold,
+                                                //                           //     color: Colors
+                                                //                           //         .black,
+                                                //                           //   ),
+                                                //                           // ),
+                                                //                           const SizedBox(
+                                                //                             height:
+                                                //                                 10,
+                                                //                           ),
+                                                //                           const Divider(),
+                                                //                           const SizedBox(
+                                                //                             height:
+                                                //                                 10,
+                                                //                           ),
+                                                //                           RatingBar(
+                                                //                             initialRating:
+                                                //                                 rating,
+                                                //                             direction:
+                                                //                                 Axis.horizontal,
+                                                //                             allowHalfRating:
+                                                //                                 true,
+                                                //                             itemCount:
+                                                //                                 5,
+                                                //                             itemSize:
+                                                //                                 36,
+                                                //                             ratingWidget:
+                                                //                                 RatingWidget(
+                                                //                               full: const Icon(
+                                                //                                 Icons.star,
+                                                //                                 color: Colors.orange,
+                                                //                               ),
+                                                //                               half: const Icon(
+                                                //                                 Icons.star_half_rounded,
+                                                //                                 color: Colors.grey,
+                                                //                               ),
+                                                //                               empty: const Icon(
+                                                //                                 Icons.star_border_rounded,
+                                                //                                 color: Colors.black,
+                                                //                               ),
+                                                //                             ),
+                                                //                             itemPadding:
+                                                //                                 EdgeInsets.zero,
+                                                //                             onRatingUpdate:
+                                                //                                 (rating1) {
+                                                //                               print(rating1);
+                                                //                               setState(() {
+                                                //                                 rating = rating1;
+                                                //                               });
+                                                //                             },
+                                                //                           ),
+                                                //                           const SizedBox(
+                                                //                             height:
+                                                //                                 10,
+                                                //                           ),
+                                                //                           TextFormField(
+                                                //                             controller:
+                                                //                                 desCon,
+                                                //                             keyboardType:
+                                                //                                 TextInputType.text,
+                                                //                             // validator: (value) {
+                                                //                             //   if (value == null || value.isEmpty) {
+                                                //                             //     return 'Please enter your mobile number';
+                                                //                             //   } else if (value.length < 10 || value.length > 10) {
+                                                //                             //     return "Mobile number must be 10 digits";
+                                                //                             //   }
+                                                //                             //   return null;
+                                                //                             // },
+                                                //                             decoration:
+                                                //                                 InputDecoration(
+                                                //                               // prefixIcon: const Icon(Icons.call_outlined),
+                                                //                               counterText: "",
+                                                //                               isDense: true,
+                                                //                               hintText: 'Write Comment',
+                                                //                               hintStyle: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+                                                //                               border: OutlineInputBorder(
+                                                //                                 borderRadius: BorderRadius.circular(5),
+                                                //                               ),
+                                                //                             ),
+                                                //                           ),
+                                                //                           // EntryField(
+                                                //                           //   controller: desCon,
+                                                //                           //   keyboardType: TextInputType.name,
+                                                //                           //   label: "Write Comment",
+                                                //                           // ),
+                                                //                           const SizedBox(
+                                                //                             height:
+                                                //                                 10,
+                                                //                           ),
+                                                //                           InkWell(
+                                                //                             onTap:
+                                                //                                 () {
+                                                //                               rateDriver(upcomingBookingList[index].driverId.toString(), upcomingBookingList[index].uneaqueId.toString());
+                                                //                               Navigator.pop(context);
+                                                //                             },
+                                                //                             child:
+                                                //                                 Container(
+                                                //                               height: 48,
+                                                //                               decoration: BoxDecoration(
+                                                //                                 color: AppColors.primary,
+                                                //                                 borderRadius: const BorderRadius.all(
+                                                //                                   Radius.circular(25.0),
+                                                //                                 ),
+                                                //                                 boxShadow: <BoxShadow>[
+                                                //                                   BoxShadow(color: AppColors.primary.withOpacity(0.5), offset: const Offset(1.1, 1.1), blurRadius: 10.0),
+                                                //                                 ],
+                                                //                               ),
+                                                //                               child: const Center(
+                                                //                                 child: Text(
+                                                //                                   "Rate Bookings",
+                                                //                                   textAlign: TextAlign.left,
+                                                //                                   style: TextStyle(
+                                                //                                     fontWeight: FontWeight.w600,
+                                                //                                     fontSize: 18,
+                                                //                                     letterSpacing: 0.0,
+                                                //                                     color: Colors.white,
+                                                //                                   ),
+                                                //                                 ),
+                                                //                               ),
+                                                //                             ),
+                                                //                           )
+                                                //                         ],
+                                                //                       ),
+                                                //                     ),
+                                                //                   );
+                                                //                 });
+                                                //           },
+                                                //           child: const Text(
+                                                //             'Rate Dridfzver',
+                                                //             style: TextStyle(
+                                                //                 fontSize: 16,
+                                                //                 fontWeight:
+                                                //                     FontWeight
+                                                //                         .bold,
+                                                //                 color: Colors
+                                                //                     .white),
+                                                //           ),
+                                                //         ),
+                                                //       )
+                                                //     : const SizedBox()
                                               ],
                                             ),
                                           ),

@@ -133,6 +133,7 @@ class BookingDataModel {
   String? driverLat;
   String? driverLong;
   String? driverRating;
+  bool? ratingGiven;
   String? driverImage;
   dynamic userName;
 
@@ -237,6 +238,7 @@ class BookingDataModel {
       this.driverLat,
       this.driverLong,
       this.driverImage,
+      this.ratingGiven,
       this.driverRating});
 
   BookingDataModel.fromJson(Map<String, dynamic> json) {
@@ -341,5 +343,6 @@ class BookingDataModel {
     driverLong = json['driver_long'];
     driverImage = json['driver_image'];
     driverRating = json['driver_rating'];
+    ratingGiven = json['rating_given'];
   }
 }
